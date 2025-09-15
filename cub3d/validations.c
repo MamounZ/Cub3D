@@ -175,6 +175,46 @@ int validate_map_content (t_data *game_data)
     return (0);
 }
 
+int validate_map_spaces(t_data *game_data)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (i < game_data->map_rows)
+    {
+        j = 0;
+        while (j < (int)ft_strlen(game_data->map[i]))
+        {
+            if (game_data->map[i][j] == '0')
+            {
+                if (i == 0 || j >= (int)ft_strlen(game_data->map[i - 1]) || ft_is_space(game_data->map[i - 1][j]))
+				{
+					ft_printf("current pos (%d,%d)",i,j );
+                    return 1;
+				}
+                if (i + 1 >= game_data->map_rows || j >= (int)ft_strlen(game_data->map[i + 1]) || ft_is_space(game_data->map[i + 1][j]))
+                  {
+					ft_printf("current pos (%d,%d)",i,j );
+                    return 1;
+				}
+                if (j == 0 || ft_is_space(game_data->map[i][j - 1]))
+                   {
+					ft_printf("current pos (%d,%d)",i,j );
+                    return 1;
+				}
+                if (j + 1 >= (int)ft_strlen(game_data->map[i]) || ft_is_space(game_data->map[i][j + 1]))
+                    {
+					ft_printf("current pos (%d,%d)",i,j );
+                    return 1;
+				}
+            }
+            j++;
+        }
+        i++;
+    }
+    return 0;
+}
 
 int validate_map(int fd , t_data *game_data)
 {
@@ -190,5 +230,6 @@ int validate_map(int fd , t_data *game_data)
 	{
         return (1);
 	}
-    return (flood_fill(game_data->map_copy, game_data->player_y, game_data->player_x,game_data->map_rows));
+   // return (flood_fill(game_data->map_copy, game_data->player_y, game_data->player_x,game_data->map_rows));
+   return (validate_map_spaces(game_data));
 }

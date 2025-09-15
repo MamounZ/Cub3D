@@ -13,6 +13,25 @@
 #include "./cub3d.h"
 #include <stdlib.h>
 
+int check_paths(t_data *game_data)
+{
+	int fd;
+
+	fd = open(game_data->ea_tex,O_RDONLY);
+	if (fd == -1)
+		return (1);
+	fd = open(game_data->so_tex,O_RDONLY);
+	if (fd == -1)
+		return (1);
+	fd = open(game_data->we_tex,O_RDONLY);
+	if (fd == -1)
+		return (1);
+	fd = open(game_data->no_tex,O_RDONLY);
+	if (fd == -1)
+		return (1);
+	return (0);
+}
+
 void free_map(char **map)
 {
     int i;
@@ -155,6 +174,8 @@ int main(int argc ,char **argv)
 	ft_bzero(&game_data,sizeof(t_data));
 	if(validate_config(fd,&game_data))
 		return (free_and_exit(&game_data , "bad config" ,fd ,1));
+        // if(check_paths)
+        //     return (free_and_exit(&game_data , "bad path" ,fd ,1));
 	if(validate_map (fd , &game_data))
 		return (free_and_exit(&game_data , "bad map" ,fd ,1));
 	print_data(&game_data);
