@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/08/20 15:09:12 by thdaib           ###   ########.fr       */
+/*   Updated: 2025/09/16 18:17:07 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,13 @@ void    free_data(t_data *data)
 void print_list(t_list *head)
 {
 	t_list *temp;
-	
+
 	temp = head;
 
 	while (temp)
 	{
 		ft_printf("%s->\n",temp->content);
-		temp = temp->next;	
+		temp = temp->next;
 	}
 
 }
@@ -156,7 +156,7 @@ int check_after_map(int fd)
 		free(line);
 		line = get_next_line(fd);
 	}
-	
+
 	return (0);
 }
 */
@@ -166,6 +166,7 @@ int main(int argc ,char **argv)
 	int fd;
 	t_data game_data;
 
+	// game_data = NULL;
 	if (validate_args(argv[1],argc))
 		return(1);
 	 fd = open(argv[1],O_RDONLY);
@@ -179,6 +180,7 @@ int main(int argc ,char **argv)
 	if(validate_map (fd , &game_data))
 		return (free_and_exit(&game_data , "bad map" ,fd ,1));
 	print_data(&game_data);
+	mlx_stuff(&game_data);
 	return (free_and_exit(&game_data ,NULL,fd ,0));
-    
+
 }

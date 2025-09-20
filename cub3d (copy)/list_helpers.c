@@ -16,7 +16,7 @@ t_list	*create_configs_list(t_list **head)
 	char *configs[6];
 	t_list *newnode;
 	char *value;
-	
+
 	counter = 0;
 	assign_configs(configs);
 	while (counter < 6)

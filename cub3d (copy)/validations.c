@@ -26,7 +26,7 @@ int validate_config(int fd ,t_data *game_data)
     t_list	*head;
 
 	head = NULL;
-	
+
     head = create_configs_list(&head);
     if (!head)
 	{
@@ -135,10 +135,12 @@ int validate_map_content_loop (t_data *game_data ,char *valid_content , char *di
 {
 	int	i;
 	int j;
+	int	longest_row;
 
+	longest_row = 0;
 	i = 0;
-	 while (game_data->map[i])
-	 {	
+	while (game_data->map[i])
+	{
         j = 0;
         while (game_data->map[i][j])
         {
@@ -147,16 +149,20 @@ int validate_map_content_loop (t_data *game_data ,char *valid_content , char *di
 			if (ft_strchr(dirictions,game_data->map[i][j]))
 			{
 				game_data->there_is_a_player++;
-				game_data->player_x = j;
-				game_data->player_y = i;
+				game_data->starting_dir = game_data->map[i][j];
+				game_data->player_pos.x = j;
+				game_data->player_pos.y = i;
 			}
 			if (game_data->there_is_a_player > 1)
 				return (1);
-            j++; 
+            j++;
         }
-        i++;
-    }
+		if (j > longest_row)
+			longest_row = j;
+		i++;
+	}
 	game_data->map_rows = i;
+	game_data->map_cols = longest_row;
 	return (0);
 }
 

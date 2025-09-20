@@ -3,16 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/08/20 14:42:49 by thdaib           ###   ########.fr       */
+/*   Updated: 2025/09/20 14:28:41 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/includes/libft.h"
 #include "libft/includes/ft_printf.h"
 #include "libft/includes/get_next_line.h"
+#include "MLX42/include/MLX42/MLX42.h"
+#include <math.h>
+#include <stdio.h>
+
+#define WIDTH 1700
+#define HEIGHT 900
+#define PI 3.14159265359
+
+typedef struct s_point
+{
+    int x;
+    int y;
+} t_point;
+
+typedef struct s_dpoint
+{
+    double x;
+    double y;
+} t_dpoint;
 
 typedef struct s_data {
     char    *no_tex;
@@ -26,10 +45,22 @@ typedef struct s_data {
     char    **map_copy;
     int		there_is_a_player;
     int     configs_done;
-	int		player_x;
-	int		player_y;
     int		map_done;
 	int		map_rows;
+	int		map_cols;
+	mlx_t   *mlx;
+    mlx_image_t *m_map;
+	int block_size;
+    int starting_dir;
+    double camerax;
+    t_dpoint raydir;
+    t_dpoint plan;
+    t_dpoint player_pos;
+    t_point player_pos_box;
+    t_dpoint player_dir;
+    t_dpoint side_dist;
+    t_dpoint delta_dist;
+
 } t_data;
 
 char    *copy_identifire(char *str);
@@ -55,3 +86,4 @@ int check_edges(t_data *geme);
 int flood_fill(char **map, int x, int y,int rows);
 int	ft_countwords(char const *s, char c);
 int store_rgb_value(t_data *game_data, char *id, int index, int value);
+void mlx_stuff(t_data *game_data);
