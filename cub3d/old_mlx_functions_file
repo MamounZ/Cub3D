@@ -1,0 +1,346 @@
+// mlx_image_t *image;
+
+// void put_block(t_data *game_data, int x, int y, int size, uint32_t color)
+// {
+// 	int i;
+// 	int j;
+
+// 	i = 0;
+// 	while (i < size)
+// 	{
+// 		j = 0;
+// 		while (j < size)
+// 		{
+// 			if (j + x >= 0 && j + x < 340 && i + y >= 0 && i + y < 180)
+// 				mlx_put_pixel(game_data->m_map, j + x, i + y, color);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
+// void put_mini_map(t_data *game_data)
+// {
+// 	int i;
+// 	int j;
+// 	int player_size;
+// 	int offset;
+
+// 	if (game_data->map_rows < game_data->map_cols)
+// 		game_data->block_size = 340 / game_data->map_cols;
+// 	else
+// 		game_data->block_size = 340 / game_data->map_rows;
+// 	i = 0;
+// 	while (i < game_data->map_rows)
+// 	{
+// 		j = 0;
+// 		while (game_data->map[i][j])
+// 		{
+// 			if (game_data->map[i][j] == '1')
+// 				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x0F3F6FFF);
+// 			else if (game_data->map[i][j] == '0')
+// 				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x669999FF);
+// 			else if (j == (int)game_data->player_pos.x && i == (int)game_data->player_pos.y)
+// 			{
+// 				player_size = game_data->block_size * 0.2;
+// 				offset = (game_data->block_size - player_size) / 2;
+// 				put_block(game_data, j * game_data->block_size + offset, i * game_data->block_size + offset, player_size, 0xFFFFFFFF);
+// 			}
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
+
+// // void ft_hook(void *arg)
+// // {
+// // 	t_data *game_data;
+// // 	game_data = (t_data *)arg;
+// // 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
+// // 		mlx_close_window(game_data->mlx);
+// // 	if (game_data->player_pos.y >= 0 && game_data->player_pos.x >= 0)
+// // 	{
+// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_UP))
+// // 		{
+// // 			double ny = game_data->player_pos.y - 0.1;
+// // 			double nx = game_data->player_pos.x;
+// // 			int cell_y = (int)(ny - PLAYER_RADIUS);
+// // 			int cell_x = (int)(nx - PLAYER_RADIUS);
+// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			{
+// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
+// // 				game_data->map[cell_y][cell_x] = 'S';
+// // 				game_data->player_pos.y = ny;
+// // 			}
+// // 		}
+// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_DOWN))
+// // 		{
+// // 			double ny = game_data->player_pos.y + 0.1;
+// // 			double nx = game_data->player_pos.x;
+// // 			int cell_y = (int)(ny - PLAYER_RADIUS);
+// // 			int cell_x = (int)(nx - PLAYER_RADIUS);
+// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			{
+// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
+// // 				game_data->map[cell_y][cell_x] = 'S';
+// // 				game_data->player_pos.y = ny;
+// // 			}
+// // 		}
+// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
+// // 		{
+// // 			double ny = game_data->player_pos.y;
+// // 			double nx = game_data->player_pos.x - 0.1;
+// // 			int cell_y = (int)(ny - PLAYER_RADIUS);
+// // 			int cell_x = (int)(nx - PLAYER_RADIUS);
+// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			{
+// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
+// // 				game_data->map[cell_y][cell_x] = 'S';
+// // 				game_data->player_pos.y = ny;
+// // 			}
+// // 		}
+// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
+// // 		{
+// // 			double ny = game_data->player_pos.y;
+// // 			double nx = game_data->player_pos.x + 0.1;
+// // 			int cell_y = (int)(ny - PLAYER_RADIUS);
+// // 			int cell_x = (int)(nx - PLAYER_RADIUS);
+// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			{
+// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
+// // 				game_data->map[cell_y][cell_x] = 'S';
+// // 				game_data->player_pos.y = ny;
+// // 			}
+// // 		}
+// // 	}
+// // 	put_mini_map(game_data);
+// // }
+
+// void ft_hook(void *arg)
+// {
+// 	t_data *game_data = (t_data *)arg;
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
+// 		mlx_close_window(game_data->mlx);
+
+// 	double moveSpeed = 0.1;
+// 	double rotSpeed = 0.08;
+
+// 	// Move forward
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_UP))
+// 	{
+// 		double next_x = game_data->player_pos.x + game_data->player_dir.x * moveSpeed;
+// 		double next_y = game_data->player_pos.y + game_data->player_dir.y * moveSpeed;
+// 		if (next_x >= 0 && next_x < game_data->map_cols && next_y >= 0 && next_y < game_data->map_rows &&
+// 			game_data->map[(int)next_y][(int)next_x] != '1')
+// 		{
+// 			game_data->player_pos.x = next_x;
+// 			game_data->player_pos.y = next_y;
+// 		}
+// 	}
+// 	// Move backward
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_DOWN))
+// 	{
+// 		double next_x = game_data->player_pos.x - game_data->player_dir.x * moveSpeed;
+// 		double next_y = game_data->player_pos.y - game_data->player_dir.y * moveSpeed;
+// 		if (next_x >= 0 && next_x < game_data->map_cols && next_y >= 0 && next_y < game_data->map_rows &&
+// 			game_data->map[(int)next_y][(int)next_x] != '1')
+// 		{
+// 			game_data->player_pos.x = next_x;
+// 			game_data->player_pos.y = next_y;
+// 		}
+// 	}
+// 	// Rotate right
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
+// 	{
+// 		double oldDirX = game_data->player_dir.x;
+// 		game_data->player_dir.x = game_data->player_dir.x * cos(-rotSpeed) - game_data->player_dir.y * sin(-rotSpeed);
+// 		game_data->player_dir.y = oldDirX * sin(-rotSpeed) + game_data->player_dir.y * cos(-rotSpeed);
+// 		double oldPlaneX = game_data->plan.x;
+// 		game_data->plan.x = game_data->plan.x * cos(-rotSpeed) - game_data->plan.y * sin(-rotSpeed);
+// 		game_data->plan.y = oldPlaneX * sin(-rotSpeed) + game_data->plan.y * cos(-rotSpeed);
+// 	}
+// 	// Rotate left
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
+// 	{
+// 		double oldDirX = game_data->player_dir.x;
+// 		game_data->player_dir.x = game_data->player_dir.x * cos(rotSpeed) - game_data->player_dir.y * sin(rotSpeed);
+// 		game_data->player_dir.y = oldDirX * sin(rotSpeed) + game_data->player_dir.y * cos(rotSpeed);
+// 		double oldPlaneX = game_data->plan.x;
+// 		game_data->plan.x = game_data->plan.x * cos(rotSpeed) - game_data->plan.y * sin(rotSpeed);
+// 		game_data->plan.y = oldPlaneX * sin(rotSpeed) + game_data->plan.y * cos(rotSpeed);
+// 	}
+
+// 	put_mini_map(game_data);
+// }
+
+// void ft_randomize(void *arg)
+// {
+// 	t_data *game_data;
+
+// 	game_data = (t_data *)arg;
+// 	for (uint32_t i = 0; i < 11; ++i)
+// 	{
+// 		for (uint32_t y = 0; y < 11; ++y)
+// 		{
+// 			uint32_t color = 0xFFFFFFFF;
+// 			mlx_put_pixel(image, i, y, color);
+// 		}
+// 	}
+// }
+
+// void rotation(t_point *vector, double theta)
+// {
+// 	int tmp_x;
+
+// 	tmp_x = vector->x;
+// 	vector->x = vector->x * cos(theta) - vector->y * sin(theta);
+// 	vector->y = tmp_x * sin(theta) + vector->y * cos(theta);
+// }
+
+// void dir_init(t_data *game_data, double theta)
+// {
+// 	game_data->player_dir.x = cos(theta);
+// 	game_data->player_dir.y = sin(theta);
+// }
+// void plan_init(t_data *game_data, double x, double y)
+// {
+// 	game_data->plan.x = x;
+// 	game_data->plan.y = y;
+// }
+
+// void r_c_init(t_data *game_data)
+// {
+// 	if (game_data->starting_dir == 'N')
+// 	{
+// 		dir_init(game_data, 3 * PI / 2);
+// 		plan_init(game_data, 0.66, 0);
+// 	}
+// 	if (game_data->starting_dir == 'E')
+// 	{
+// 		dir_init(game_data, 0);
+// 		plan_init(game_data, 0, 0.66);
+// 	}
+// 	if (game_data->starting_dir == 'S')
+// 	{
+// 		dir_init(game_data, PI / 2);
+// 		plan_init(game_data, -0.66, 0);
+// 	}
+// 	if (game_data->starting_dir == 'W')
+// 	{
+// 		dir_init(game_data, PI);
+// 		plan_init(game_data, 0, -0.66);
+// 	}
+// }
+
+// void draw_vertical_line(mlx_image_t *img, int x, int start, int end, uint32_t color)
+// {
+// 	if (x < 0 || x >= (int)img->width)
+// 		return;
+// 	if (start < 0)
+// 		start = 0;
+// 	if (end >= (int)img->height)
+// 		end = img->height - 1;
+
+// 	for (int y = start; y <= end; y++)
+// 		mlx_put_pixel(img, x, y, color);
+// }
+
+// void ray_caster(void *arg)
+// {
+// 	t_data *game_data = (t_data *)arg;
+// 	int x;
+// 	uint32_t color = 0xAAAAAAFF;
+
+// 	// mlx_delete_image(game_data->mlx, game_data->world);
+// 	game_data->world = mlx_new_image(game_data->mlx, WIDTH, HEIGHT);
+// 	x = 0;
+// 	while (x < WIDTH)
+// 	{
+// 		game_data->hit = 0;
+// 		game_data->camerax = 2 * x / (double)WIDTH - 1;
+// 		game_data->raydir.x = game_data->player_dir.x + game_data->plan.x * game_data->camerax;
+// 		game_data->raydir.y = game_data->player_dir.y + game_data->plan.y * game_data->camerax;
+// 		game_data->player_pos_box.x = (int)game_data->player_pos.x;
+// 		game_data->player_pos_box.y = (int)game_data->player_pos.y;
+// 		game_data->delta_dist.x = fabs(1 / game_data->raydir.x);
+// 		game_data->delta_dist.y = fabs(1 / game_data->raydir.y);
+
+// 		if (game_data->raydir.x < 0)
+// 		{
+// 			game_data->step.x = -1;
+// 			game_data->side_dist.x = (game_data->player_pos.x - game_data->player_pos_box.x) * game_data->delta_dist.x;
+// 		}
+// 		else
+// 		{
+// 			game_data->step.x = 1;
+// 			game_data->side_dist.x = (game_data->player_pos_box.x + 1.0 - game_data->player_pos.x) * game_data->delta_dist.x;
+// 		}
+// 		if (game_data->raydir.y < 0)
+// 		{
+// 			game_data->step.y = -1;
+// 			game_data->side_dist.y = (game_data->player_pos.y - game_data->player_pos_box.y) * game_data->delta_dist.y;
+// 		}
+// 		else
+// 		{
+// 			game_data->step.y = 1;
+// 			game_data->side_dist.y = (game_data->player_pos_box.y + 1.0 - game_data->player_pos.y) * game_data->delta_dist.y;
+// 		}
+
+// 		while (game_data->hit == 0)
+// 		{
+// 			// jump to next map square, either in x-direction, or in y-direction
+// 			if (game_data->side_dist.x < game_data->side_dist.y)
+// 			{
+// 				game_data->side_dist.x += game_data->delta_dist.x;
+// 				game_data->player_pos_box.x += game_data->step.x;
+// 				game_data->side = 0;
+// 			}
+// 			else
+// 			{
+// 				game_data->side_dist.y += game_data->delta_dist.y;
+// 				game_data->player_pos_box.y += game_data->step.y;
+// 				game_data->side = 1;
+// 			}
+// 			// Check if ray has hit a wall
+// 			if (game_data->player_pos_box.y >= 0 && game_data->player_pos_box.y < game_data->map_rows &&
+// 				game_data->player_pos_box.x >= 0 && game_data->player_pos_box.x < game_data->map_cols &&
+// 				game_data->map[game_data->player_pos_box.y][game_data->player_pos_box.x] == '1')
+// 				game_data->hit = 1;
+// 		}
+
+// 		if (game_data->side == 0)
+// 			game_data->perpwalldist = (game_data->side_dist.x - game_data->delta_dist.x);
+// 		else
+// 			game_data->perpwalldist = (game_data->side_dist.y - game_data->delta_dist.y);
+
+// 		// Calculate height of line to draw on screen
+// 		game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
+
+// 		// calculate lowest and highest pixel to fill in current stripe
+// 		int drawStart = -game_data->lineHeight / 2 + HEIGHT / 2;
+// 		if (drawStart < 0)
+// 			drawStart = 0;
+// 		int drawEnd = game_data->lineHeight / 2 + HEIGHT / 2;
+// 		if (drawEnd >= HEIGHT)
+// 			drawEnd = HEIGHT - 1;
+// 		draw_vertical_line(game_data->world, x, drawStart, drawEnd, color);
+
+// 		x++;
+// 	}
+// }
+
+// void mlx_stuff(t_data *game_data)
+// {
+// 	// needs protection!!!!!!!!!!!!!!!
+// 	game_data->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
+// 	game_data->m_map = mlx_new_image(game_data->mlx, 340, 180);
+// 	put_mini_map(game_data);
+// 	mlx_image_to_window(game_data->mlx, game_data->m_map, 0, 0);
+// 	image = mlx_new_image(game_data->mlx, 11, 11);
+// 	mlx_image_to_window(game_data->mlx, image, 0, 0);
+// 	mlx_image_to_window(game_data->mlx, game_data->world, 0, 0);
+// 	// ray_caster(game_data);
+// 	mlx_loop_hook(game_data->mlx, ray_caster, game_data);
+// 	mlx_loop_hook(game_data->mlx, ft_hook, game_data);
+// 	mlx_loop(game_data->mlx);
+// 	mlx_terminate(game_data->mlx);
+// }

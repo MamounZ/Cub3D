@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/20 14:28:41 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/25 15:04:07 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #define WIDTH 1700
 #define HEIGHT 900
 #define PI 3.14159265359
+#define PLAYER_RADIUS 0.4
 
 typedef struct s_point
 {
@@ -39,6 +40,7 @@ typedef struct s_data {
     char    *we_tex;
     char    *ea_tex;
     char    *sprite_tex;
+    mlx_texture_t *textures[4];
     int     floor_rgb[3];
     int     ceiling_rgb[3];
     char    **map;
@@ -50,7 +52,8 @@ typedef struct s_data {
 	int		map_cols;
 	mlx_t   *mlx;
     mlx_image_t *m_map;
-	int block_size;
+    mlx_image_t *world;
+    int block_size;
     int starting_dir;
     double camerax;
     t_dpoint raydir;
@@ -60,6 +63,12 @@ typedef struct s_data {
     t_dpoint player_dir;
     t_dpoint side_dist;
     t_dpoint delta_dist;
+    double perpwalldist;
+    t_point step;
+    int hit;
+    int side;
+    int lineHeight;
+    int needs_redraw;
 
 } t_data;
 

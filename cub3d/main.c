@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/16 18:17:07 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/25 20:16:23 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ int main(int argc ,char **argv)
 		return (free_and_exit(&game_data , "bad map" ,fd ,1));
 	print_data(&game_data);
 	mlx_stuff(&game_data);
+
 	return (free_and_exit(&game_data ,NULL,fd ,0));
 
 }
