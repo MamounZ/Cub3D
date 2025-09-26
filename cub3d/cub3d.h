@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/25 15:04:07 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/26 19:09:41 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ typedef struct s_data {
     int side;
     int lineHeight;
     int needs_redraw;
+    double mouse_sensitivity;
+    int mouse_x_last;
+    int mouse_y_last;
+    int mouse_initialized;
 
 } t_data;
 

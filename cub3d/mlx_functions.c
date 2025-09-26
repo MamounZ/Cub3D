@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/09/25 20:25:05 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/26 19:27:32 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -397,6 +397,41 @@ void ray_caster(void *arg)
 	put_mini_map(game_data);
 }
 
+void mouse_hook(double xpos, double ypos, void *param)
+{
+	t_data *game_data = (t_data *)param;
+	int center_x;
+	int center_y;
+	int delta_x;
+	double rot_angle;
+
+	// Get window center
+	center_x = WIDTH / 2;
+	center_y = HEIGHT / 2;
+	(void)ypos;
+
+	if (!game_data->mouse_initialized)
+	{
+		mlx_set_mouse_pos(game_data->mlx, center_x, center_y);
+		game_data->mouse_initialized = 1;
+		return;
+	}
+	// Calculate movement from center
+	delta_x = (int)xpos - center_x;
+	// Apply rotation
+	if (delta_x != 0)
+	{
+		rot_angle = delta_x * game_data->mouse_sensitivity;
+		rotation(&game_data->player_dir, rot_angle);
+		rotation(&game_data->plan, rot_angle);
+		normalize(&game_data->player_dir);
+		normalize(&game_data->plan);
+		game_data->needs_redraw = 1;
+	}
+	// Recenter mouse
+	mlx_set_mouse_pos(game_data->mlx, center_x, center_y);
+}
+
 void mlx_stuff(t_data *game_data)
 {
 	// Initialize MLX
@@ -458,12 +493,15 @@ void mlx_stuff(t_data *game_data)
 
 	// Initialize needs_redraw
 	game_data->needs_redraw = 1; // Force initial render
-
+	game_data->mouse_sensitivity = 0.00025; // Adjust this value to your liking
+	game_data->mouse_initialized = 0;
 	// Initialize player direction
 	r_c_init(game_data);
 
 	// Start rendering
 	mlx_loop_hook(game_data->mlx, ray_caster, game_data);
 	mlx_loop_hook(game_data->mlx, ft_hook, game_data);
+	mlx_cursor_hook(game_data->mlx, &mouse_hook, game_data);
+	mlx_set_cursor_mode(game_data->mlx, MLX_MOUSE_HIDDEN);
 	mlx_loop(game_data->mlx);
 }
