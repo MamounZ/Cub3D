@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/26 19:09:41 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/29 18:27:51 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_data {
     int mouse_x_last;
     int mouse_y_last;
     int mouse_initialized;
-
+    t_dpoint move;
 } t_data;
 
 char    *copy_identifire(char *str);

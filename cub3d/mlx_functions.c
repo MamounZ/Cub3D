@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/09/26 19:27:32 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/29 18:24:53 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,29 @@ void put_block(t_data *game_data, int x, int y, int size, uint32_t color)
 	}
 }
 
-void put_mini_map(t_data *game_data)
+void draw_mm_blocks(t_data *game_data, int i, int j)
 {
-	int i;
-	int j;
 	int player_size;
 	int player_x;
 	int player_y;
 
+	if (game_data->map[i][j] == '1')
+		put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x000000FF);
+	else if (game_data->map[i][j] == '0' || ft_strchr("NSEW", game_data->map[i][j]))
+		put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0xB0B0B0FF);
+	if (j == (int)game_data->player_pos.x && i == (int)game_data->player_pos.y)
+	{
+		player_size = game_data->block_size * 0.4;
+		player_x = (int)(game_data->player_pos.x * game_data->block_size - player_size / 2);
+		player_y = (int)(game_data->player_pos.y * game_data->block_size - player_size / 2);
+		put_block(game_data, player_x, player_y, player_size, 0xFFFFFFFF);
+	}
+}
+
+void put_mini_map(t_data *game_data)
+{
+	int i;
+	int j;
 
 	i = 0;
 	if (game_data->map_rows < game_data->map_cols)
@@ -50,17 +65,7 @@ void put_mini_map(t_data *game_data)
 		j = 0;
 		while (j < game_data->map_cols && game_data->map[i][j])
 		{
-			if (game_data->map[i][j] == '1')
-				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x000000FF);
-			else if (game_data->map[i][j] == '0' || ft_strchr("NSEW", game_data->map[i][j]))
-				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0xB0B0B0FF);
-			if (j == (int)game_data->player_pos.x && i == (int)game_data->player_pos.y)
-			{
-				player_size = game_data->block_size * 0.4;
-				player_x = (int)(game_data->player_pos.x * game_data->block_size - player_size / 2);
-				player_y = (int)(game_data->player_pos.y * game_data->block_size - player_size / 2);
-				put_block(game_data, player_x, player_y, player_size, 0xFFFFFFFF);
-			}
+			draw_mm_blocks(game_data, i, j);
 			j++;
 		}
 		i++;
@@ -76,7 +81,9 @@ void rotation(t_dpoint *vector, double theta)
 }
 void normalize(t_dpoint *vector)
 {
-	double magnitude = sqrt(vector->x * vector->x + vector->y * vector->y);
+	double magnitude;
+
+	magnitude = sqrt(vector->x * vector->x + vector->y * vector->y);
 	if (magnitude > 0)
 	{
 		vector->x /= magnitude;
@@ -86,126 +93,197 @@ void normalize(t_dpoint *vector)
 
 int is_position_safe(t_data *game_data, double x, double y, double buffer)
 {
-	// Calculate the bounding box of the player with buffer
-	int min_x = (int)(x - buffer);
-	int max_x = (int)(x + buffer);
-	int min_y = (int)(y - buffer);
-	int max_y = (int)(y + buffer);
+	int min_x;
+	int max_x;
+	int min_y;
+	int max_y;
 
-	// Check all cells that the buffer zone overlaps
+	min_x = (int)(x - buffer);
+	max_x = (int)(x + buffer);
+	min_y = (int)(y - buffer);
+	max_y = (int)(y + buffer);
 	for (int check_y = min_y; check_y <= max_y; check_y++)
 	{
 		for (int check_x = min_x; check_x <= max_x; check_x++)
 		{
-			// Check bounds
 			if (check_x < 0 || check_x >= game_data->map_cols ||
 				check_y < 0 || check_y >= game_data->map_rows)
-				return 0; // Outside map bounds
-
-			// Check if cell contains a wall
+				return (0);
 			if (game_data->map[check_y][check_x] == '1')
-				return 0; // Wall detected in buffer zone
+				return (0);
 		}
 	}
-	return 1; // Position is safe
+	return (1);
 }
 
-void move_player_with_sliding(t_data *game_data, double move_x, double move_y, double buffer)
+void move_player_with_sliding(t_data *game_data, double buffer)
 {
-	double next_x = game_data->player_pos.x + move_x;
-	double next_y = game_data->player_pos.y + move_y;
+	double next_x;
+	double next_y;
+	int can_move_x;
+	int can_move_y;
 
-	// Try to move in both directions
-	int can_move_x = is_position_safe(game_data, next_x, game_data->player_pos.y, buffer);
-	int can_move_y = is_position_safe(game_data, game_data->player_pos.x, next_y, buffer);
-
-	// Apply movement based on what's possible
+	next_x = game_data->player_pos.x + game_data->move.x;
+	next_y = game_data->player_pos.y + game_data->move.y;
+	can_move_x = is_position_safe(game_data, next_x, game_data->player_pos.y, buffer);
+	can_move_y = is_position_safe(game_data, game_data->player_pos.x, next_y, buffer);
 	if (can_move_x && can_move_y)
 	{
-		// Can move in both directions - normal diagonal movement
 		game_data->player_pos.x = next_x;
 		game_data->player_pos.y = next_y;
 	}
 	else if (can_move_x)
 	{
-		// Can only move in X direction - slide along Y-axis wall
 		game_data->player_pos.x = next_x;
 	}
 	else if (can_move_y)
 	{
-		// Can only move in Y direction - slide along X-axis wall
 		game_data->player_pos.y = next_y;
 	}
-	// If neither direction is possible, player stays in place
 }
-
-void ft_hook(void *arg)
+void movment_hooks(t_data *game_data, double moveSpeed, double buffer)
 {
-	t_data *game_data = (t_data *)arg;
-	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(game_data->mlx);
-
-	double moveSpeed = 0.05;
-	double rotSpeed = 0.04;
-	double buffer = 0.1;
-
-	// Move forward
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_W))
 	{
-		double move_x = game_data->player_dir.x * moveSpeed;
-		double move_y = game_data->player_dir.y * moveSpeed;
-		move_player_with_sliding(game_data, move_x, move_y, buffer);
+		game_data->move.x = game_data->player_dir.x * moveSpeed;
+		game_data->move.y = game_data->player_dir.y * moveSpeed;
+		move_player_with_sliding(game_data, buffer);
+		game_data->needs_redraw = 1;
 	}
-
-	// Move backward
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_S))
 	{
-		double move_x = -game_data->player_dir.x * moveSpeed;
-		double move_y = -game_data->player_dir.y * moveSpeed;
-		move_player_with_sliding(game_data, move_x, move_y, buffer);
+		game_data->move.x = -game_data->player_dir.x * moveSpeed;
+		game_data->move.y = -game_data->player_dir.y * moveSpeed;
+		move_player_with_sliding(game_data, buffer);
+		game_data->needs_redraw = 1;
 	}
-
-	// Move right (strafe)
+}
+void movment_hooks2(t_data *game_data, double moveSpeed, double buffer)
+{
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_D))
 	{
-		double move_x = -game_data->player_dir.y * moveSpeed;
-		double move_y = game_data->player_dir.x * moveSpeed;
-		move_player_with_sliding(game_data, move_x, move_y, buffer);
+		game_data->move.x = -game_data->player_dir.y * moveSpeed;
+		game_data->move.y = game_data->player_dir.x * moveSpeed;
+		move_player_with_sliding(game_data, buffer);
+		game_data->needs_redraw = 1;
 	}
-
-	// Move left (strafe)
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_A))
 	{
-		double move_x = game_data->player_dir.y * moveSpeed;
-		double move_y = -game_data->player_dir.x * moveSpeed;
-		move_player_with_sliding(game_data, move_x, move_y, buffer);
+		game_data->move.x = game_data->player_dir.y * moveSpeed;
+		game_data->move.y = -game_data->player_dir.x * moveSpeed;
+		move_player_with_sliding(game_data, buffer);
+		game_data->needs_redraw = 1;
 	}
-	// Rotate right
+}
+
+void rotation_hooks(t_data *game_data, double rotSpeed)
+{
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
 	{
 		rotation(&game_data->player_dir, rotSpeed);
 		rotation(&game_data->plan, rotSpeed);
-		normalize(&game_data->player_dir); // Prevent drift
-		normalize(&game_data->plan); // Keep plan consistent
+		normalize(&game_data->player_dir);
+		normalize(&game_data->plan);
+		game_data->needs_redraw = 1;
 	}
-	// Rotate left
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
 	{
 		rotation(&game_data->player_dir, -rotSpeed);
 		rotation(&game_data->plan, -rotSpeed);
-		normalize(&game_data->player_dir); // Prevent drift
-		normalize(&game_data->plan); // Keep plan consistent
-	}
-	if (mlx_is_key_down(game_data->mlx, MLX_KEY_W) ||
-		mlx_is_key_down(game_data->mlx, MLX_KEY_S) ||
-		mlx_is_key_down(game_data->mlx, MLX_KEY_A) ||
-		mlx_is_key_down(game_data->mlx, MLX_KEY_D) ||
-		mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT) ||
-		mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
-	{
+		normalize(&game_data->player_dir);
+		normalize(&game_data->plan);
 		game_data->needs_redraw = 1;
 	}
 }
+
+void ft_hook(void *arg)
+{
+	t_data *game_data;
+	double moveSpeed;
+	double rotSpeed;
+	double buffer;
+
+	game_data = (t_data *)arg;
+	moveSpeed = 0.05;
+	rotSpeed = 0.04;
+	buffer = 0.1;
+	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
+		mlx_close_window(game_data->mlx);
+	movment_hooks(game_data, moveSpeed, buffer);
+	movment_hooks2(game_data, moveSpeed, buffer);
+	rotation_hooks(game_data, rotSpeed);
+}
+
+// void ft_hook(void *arg)
+// {
+// 	t_data *game_data;
+// 	double moveSpeed;
+// 	double rotSpeed;
+// 	double buffer;
+// 	double game_data->move.x;
+// 	double game_data->move.y;
+
+// 	game_data = (t_data *)arg;
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
+// 		mlx_close_window(game_data->mlx);
+// 	moveSpeed = 0.05;
+// 	rotSpeed = 0.04;
+// 	buffer = 0.1;
+
+// 	// Move forward
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_W))
+// 	{
+// 		game_data->move.x = game_data->player_dir.x * moveSpeed;
+// 		game_data->move.y = game_data->player_dir.y * moveSpeed;
+// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
+// 		game_data->needs_redraw = 1;
+// 	}
+
+// 	// Move backward
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_S))
+// 	{
+// 		game_data->move.x = -game_data->player_dir.x * moveSpeed;
+// 		game_data->move.y = -game_data->player_dir.y * moveSpeed;
+// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
+// 		game_data->needs_redraw = 1;
+// 	}
+
+// 	// Move right (strafe)
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_D))
+// 	{
+// 		game_data->move.x = -game_data->player_dir.y * moveSpeed;
+// 		game_data->move.y = game_data->player_dir.x * moveSpeed;
+// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
+// 		game_data->needs_redraw = 1;
+// 	}
+
+// 	// Move left (strafe)
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_A))
+// 	{
+// 		game_data->move.x = game_data->player_dir.y * moveSpeed;
+// 		game_data->move.y = -game_data->player_dir.x * moveSpeed;
+// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
+// 		game_data->needs_redraw = 1;
+// 	}
+// 	// Rotate right
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
+// 	{
+// 		rotation(&game_data->player_dir, rotSpeed);
+// 		rotation(&game_data->plan, rotSpeed);
+// 		normalize(&game_data->player_dir); // Prevent drift
+// 		normalize(&game_data->plan); // Keep plan consistent
+// 		game_data->needs_redraw = 1;
+// 	}
+// 	// Rotate left
+// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
+// 	{
+// 		rotation(&game_data->player_dir, -rotSpeed);
+// 		rotation(&game_data->plan, -rotSpeed);
+// 		normalize(&game_data->player_dir); // Prevent drift
+// 		normalize(&game_data->plan); // Keep plan consistent
+// 		game_data->needs_redraw = 1;
+// 	}
+// }
 
 void dir_init(t_data *game_data, double theta)
 {
@@ -248,7 +326,7 @@ void r_c_init(t_data *game_data)
 uint32_t get_texture_pixel(mlx_texture_t *texture, int x, int y)
 {
 	if (x < 0 || x >= (int)texture->width || y < 0 || y >= (int)texture->height)
-		return 0xFF0000FF; // Red for error
+		return (0xFF0000FF); // Red for error
 	uint8_t *pixel = &texture->pixels[(y * texture->width + x) * 4];
 	return (pixel[0] << 24) | (pixel[1] << 16) | (pixel[2] << 8) | pixel[3];
 }
@@ -257,62 +335,60 @@ int rgb_to_int(int *rgb)
 	return ((rgb[0] << 24) | (rgb[1] << 16) | (rgb[2] << 8) | 0xFF);
 }
 
-void draw_vertical_line(t_data *game_data, int x, int start, int end)
+void Determine_texture(t_data *game_data, int *texnum)
 {
-	if (x < 0 || x >= WIDTH)
-		return;
-	if (start < 0)
-		start = 0;
-	if (end >= HEIGHT)
-		end = HEIGHT - 1;
+	if (game_data->side == 0 && game_data->raydir.x > 0)
+		*texnum = 2; // EA
+	else if (game_data->side == 0 && game_data->raydir.x <= 0)
+		*texnum = 3; // WE
+	else if (game_data->side == 1 && game_data->raydir.y > 0)
+		*texnum = 1; // SO
+	else if (game_data->side == 1 && game_data->raydir.y <= 0)
+		*texnum = 0; // NO
+}
+void calculate_wall_hit_pos_to_texture(t_data *game_data, double *wallx, int *texx, int *texnum)
+{
+	if (game_data->side == 0)
+		*wallx = game_data->player_pos.y + game_data->perpwalldist * game_data->raydir.y;
+	else
+		*wallx = game_data->player_pos.x + game_data->perpwalldist * game_data->raydir.x;
+	*wallx -= floor(*wallx);
+	*texx = (int)(*wallx * (double)game_data->textures[*texnum]->width);
+	// merroring for west and north textures
+	if ((game_data->side == 0 && game_data->raydir.x <= 0) || (game_data->side == 1 && game_data->raydir.y >= 0))
+		*texx = game_data->textures[*texnum]->width - *texx - 1;
+}
+void draw_texture_on_wall(t_data *game_data, int *texnum, int *texx, int start, int end, int x)
+{
+	double step;
+	double texpos;
+	int y;
+	int texy;
+	uint32_t color;
 
+	step = 1.0 * game_data->textures[*texnum]->height / game_data->lineHeight;
+	texpos = (start - HEIGHT / 2 + game_data->lineHeight / 2) * step;
+	y = start;
+	while(y <= end)
+	{
+		texy = (int)texpos % game_data->textures[*texnum]->height;
+		if (texy < 0)
+			texy += game_data->textures[*texnum]->height;
+		texpos += step;
+		color = get_texture_pixel(game_data->textures[*texnum], *texx, texy);
+		mlx_put_pixel(game_data->world, x, y, color);
+		y++;
+	}
+}
+
+void draw_ceiling_floor(t_data *game_data, int x, int start, int end)
+{
 	uint32_t ceiling_color = rgb_to_int(game_data->ceiling_rgb);
 	uint32_t floor_color = rgb_to_int(game_data->floor_rgb);
-	printf("ceiling_color is %x\n", ceiling_color);
-	printf("floor_color is %x\n", floor_color);
 
 	for (int y = 0; y < start; y++)
 	{
 		mlx_put_pixel(game_data->world, x, y, ceiling_color);
-	}
-	if (start <= end)
-	{
-		if (game_data->textures[0] && game_data->textures[1] && game_data->textures[2] && game_data->textures[3])
-		{
-			int texNum = 0; // Determine texture: 0=NO, 1=SO, 2=EA, 3=WE
-			if (game_data->side == 0 && game_data->raydir.x > 0)
-				texNum = 2; // EA
-			else if (game_data->side == 0 && game_data->raydir.x <= 0)
-				texNum = 3; // WE
-			else if (game_data->side == 1 && game_data->raydir.y > 0)
-				texNum = 1; // SO
-			else if (game_data->side == 1 && game_data->raydir.y <= 0)
-				texNum = 0; // NO
-
-			double wallX;
-			if (game_data->side == 0)
-				wallX = game_data->player_pos.y + game_data->perpwalldist * game_data->raydir.y;
-			else
-				wallX = game_data->player_pos.x + game_data->perpwalldist * game_data->raydir.x;
-			wallX -= floor(wallX);
-
-			int texX = (int)(wallX * (double)game_data->textures[texNum]->width);
-			// merroring for west and north textures
-			if ((game_data->side == 0 && game_data->raydir.x <= 0) || (game_data->side == 1 && game_data->raydir.y >= 0))
-				texX = game_data->textures[texNum]->width - texX - 1;
-
-			double step = 1.0 * game_data->textures[texNum]->height / game_data->lineHeight;
-			double texPos = (start - HEIGHT / 2 + game_data->lineHeight / 2) * step;
-			for (int y = start; y <= end; y++)
-			{
-				int texY = (int)texPos % game_data->textures[texNum]->height;
-				if (texY < 0)
-					texY += game_data->textures[texNum]->height;
-				texPos += step;
-				uint32_t color = get_texture_pixel(game_data->textures[texNum], texX, texY);
-				mlx_put_pixel(game_data->world, x, y, color);
-			}
-		}
 	}
 	for (int y = end + 1; y < HEIGHT; y++)
 	{
@@ -320,105 +396,134 @@ void draw_vertical_line(t_data *game_data, int x, int start, int end)
 	}
 }
 
+void draw_vertical_line(t_data *game_data, int x, int start, int end)
+{
+	int texnum;
+	double wallx;
+	int texx;
+
+	if (x < 0 || x >= WIDTH)
+		return;
+	if (start < 0)
+		start = 0;
+	if (end >= HEIGHT)
+		end = HEIGHT - 1;
+	draw_ceiling_floor(game_data, x, start, end);
+	if (start <= end)
+	{
+		if (game_data->textures[0] && game_data->textures[1] && game_data->textures[2] && game_data->textures[3])
+		{
+			Determine_texture(game_data, &texnum);
+			calculate_wall_hit_pos_to_texture(game_data, &wallx, &texx, &texnum);
+			draw_texture_on_wall(game_data, &texnum, &texx, start, end, x);
+		}
+	}
+}
+void dda_init(t_data *game_data, int x)
+{
+	game_data->hit = 0;
+	game_data->camerax = 2 * x / (double)WIDTH - 1;
+	game_data->raydir.x = game_data->player_dir.x + game_data->plan.x * game_data->camerax;
+	game_data->raydir.y = game_data->player_dir.y + game_data->plan.y * game_data->camerax;
+	game_data->player_pos_box.x = (int)game_data->player_pos.x;
+	game_data->player_pos_box.y = (int)game_data->player_pos.y;
+	game_data->delta_dist.x = fabs(1 / game_data->raydir.x);
+	game_data->delta_dist.y = fabs(1 / game_data->raydir.y);
+}
+void dda_init_2(t_data *game_data)
+{
+	if (game_data->raydir.x < 0)
+	{
+		game_data->step.x = -1;
+		game_data->side_dist.x = (game_data->player_pos.x - game_data->player_pos_box.x) * game_data->delta_dist.x;
+	}
+	else
+	{
+		game_data->step.x = 1;
+		game_data->side_dist.x = (game_data->player_pos_box.x + 1.0 - game_data->player_pos.x) * game_data->delta_dist.x;
+	}
+	if (game_data->raydir.y < 0)
+	{
+		game_data->step.y = -1;
+		game_data->side_dist.y = (game_data->player_pos.y - game_data->player_pos_box.y) * game_data->delta_dist.y;
+	}
+	else
+	{
+		game_data->step.y = 1;
+		game_data->side_dist.y = (game_data->player_pos_box.y + 1.0 - game_data->player_pos.y) * game_data->delta_dist.y;
+	}
+}
+void dda_loop(t_data *game_data)
+{
+	while (game_data->hit == 0)
+	{
+		if (game_data->side_dist.x < game_data->side_dist.y)
+		{
+			game_data->side_dist.x += game_data->delta_dist.x;
+			game_data->player_pos_box.x += game_data->step.x;
+			game_data->side = 0;
+		}
+		else
+		{
+			game_data->side_dist.y += game_data->delta_dist.y;
+			game_data->player_pos_box.y += game_data->step.y;
+			game_data->side = 1;
+		}
+		if (game_data->player_pos_box.y >= 0 && game_data->player_pos_box.y < game_data->map_rows &&
+			game_data->player_pos_box.x >= 0 && game_data->player_pos_box.x < game_data->map_cols &&
+			game_data->map[game_data->player_pos_box.y][game_data->player_pos_box.x] == '1')
+			game_data->hit = 1;
+	}
+}
+void get_wall_height(t_data *game_data, int *wallstart, int *wallend)
+{
+	if (game_data->side == 0)
+		game_data->perpwalldist = game_data->side_dist.x - game_data->delta_dist.x;
+	else
+		game_data->perpwalldist = game_data->side_dist.y - game_data->delta_dist.y;
+	game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
+	*wallstart = -game_data->lineHeight / 2 + HEIGHT / 2;
+	*wallend = game_data->lineHeight / 2 + HEIGHT / 2;
+}
+
 void ray_caster(void *arg)
 {
-	t_data *game_data = (t_data *)arg;
+	t_data *game_data;
+	int x;
+	int wallstart;
+	int wallend;
 
+	game_data = (t_data *)arg;
 	if (!game_data->needs_redraw)
 		return;
-
 	game_data->needs_redraw = 0;
-	// Raycasting
-	for (int x = 0; x < WIDTH; x++)
+	x = 0;
+	while (x < WIDTH)
 	{
-		game_data->hit = 0;
-		game_data->camerax = 2 * x / (double)WIDTH - 1;
-		game_data->raydir.x = game_data->player_dir.x + game_data->plan.x * game_data->camerax;
-		game_data->raydir.y = game_data->player_dir.y + game_data->plan.y * game_data->camerax;
-		game_data->player_pos_box.x = (int)game_data->player_pos.x;
-		game_data->player_pos_box.y = (int)game_data->player_pos.y;
-		game_data->delta_dist.x = (game_data->raydir.x == 0) ? 1e30 : fabs(1 / game_data->raydir.x);
-		game_data->delta_dist.y = (game_data->raydir.y == 0) ? 1e30 : fabs(1 / game_data->raydir.y);
-
-		if (game_data->raydir.x < 0)
-		{
-			game_data->step.x = -1;
-			game_data->side_dist.x = (game_data->player_pos.x - game_data->player_pos_box.x) * game_data->delta_dist.x;
-		}
-		else
-		{
-			game_data->step.x = 1;
-			game_data->side_dist.x = (game_data->player_pos_box.x + 1.0 - game_data->player_pos.x) * game_data->delta_dist.x;
-		}
-		if (game_data->raydir.y < 0)
-		{
-			game_data->step.y = -1;
-			game_data->side_dist.y = (game_data->player_pos.y - game_data->player_pos_box.y) * game_data->delta_dist.y;
-		}
-		else
-		{
-			game_data->step.y = 1;
-			game_data->side_dist.y = (game_data->player_pos_box.y + 1.0 - game_data->player_pos.y) * game_data->delta_dist.y;
-		}
-
-		while (game_data->hit == 0)
-		{
-			if (game_data->side_dist.x < game_data->side_dist.y)
-			{
-				game_data->side_dist.x += game_data->delta_dist.x;
-				game_data->player_pos_box.x += game_data->step.x;
-				game_data->side = 0;
-			}
-			else
-			{
-				game_data->side_dist.y += game_data->delta_dist.y;
-				game_data->player_pos_box.y += game_data->step.y;
-				game_data->side = 1;
-			}
-			if (game_data->player_pos_box.y >= 0 && game_data->player_pos_box.y < game_data->map_rows &&
-				game_data->player_pos_box.x >= 0 && game_data->player_pos_box.x < game_data->map_cols &&
-				game_data->map[game_data->player_pos_box.y][game_data->player_pos_box.x] == '1')
-				game_data->hit = 1;
-		}
-
-		if (game_data->side == 0)
-			game_data->perpwalldist = game_data->side_dist.x - game_data->delta_dist.x;
-		else
-			game_data->perpwalldist = game_data->side_dist.y - game_data->delta_dist.y;
-
-		game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
-		int drawStart = -game_data->lineHeight / 2 + HEIGHT / 2;
-		int drawEnd = game_data->lineHeight / 2 + HEIGHT / 2;
-		draw_vertical_line(game_data, x, drawStart, drawEnd);
+		dda_init(game_data, x);
+		dda_init_2(game_data);
+		dda_loop(game_data);
+		get_wall_height(game_data, &wallstart, &wallend);
+		draw_vertical_line(game_data, x, wallstart, wallend);
+		x++;
 	}
-
-	// Draw minimap
-
 	put_mini_map(game_data);
 }
 
 void mouse_hook(double xpos, double ypos, void *param)
 {
 	t_data *game_data = (t_data *)param;
-	int center_x;
-	int center_y;
 	int delta_x;
 	double rot_angle;
 
-	// Get window center
-	center_x = WIDTH / 2;
-	center_y = HEIGHT / 2;
 	(void)ypos;
-
 	if (!game_data->mouse_initialized)
 	{
-		mlx_set_mouse_pos(game_data->mlx, center_x, center_y);
+		mlx_set_mouse_pos(game_data->mlx, WIDTH / 2, HEIGHT / 2);
 		game_data->mouse_initialized = 1;
 		return;
 	}
-	// Calculate movement from center
-	delta_x = (int)xpos - center_x;
-	// Apply rotation
+	delta_x = (int)xpos - WIDTH / 2;
 	if (delta_x != 0)
 	{
 		rot_angle = delta_x * game_data->mouse_sensitivity;
@@ -428,21 +533,17 @@ void mouse_hook(double xpos, double ypos, void *param)
 		normalize(&game_data->plan);
 		game_data->needs_redraw = 1;
 	}
-	// Recenter mouse
-	mlx_set_mouse_pos(game_data->mlx, center_x, center_y);
+	mlx_set_mouse_pos(game_data->mlx, WIDTH / 2, HEIGHT / 2);
 }
 
 void mlx_stuff(t_data *game_data)
 {
-	// Initialize MLX
 	game_data->mlx = mlx_init(WIDTH, HEIGHT, "Cub3D", true);
 	if (!game_data->mlx)
 	{
 		printf("Error: MLX initialization failed\n");
 		exit(1);
 	}
-
-	// Load textures
 	if (!game_data->no_tex || !game_data->so_tex || !game_data->we_tex || !game_data->ea_tex)
 	{
 		printf("Error: Missing texture path\n");
@@ -472,8 +573,6 @@ void mlx_stuff(t_data *game_data)
 		printf("Error: Failed to load texture %s\n", game_data->we_tex);
 		exit(1);
 	}
-
-	// Initialize images
 	game_data->world = mlx_new_image(game_data->mlx, WIDTH, HEIGHT);
 	if (!game_data->world)
 	{
@@ -486,19 +585,12 @@ void mlx_stuff(t_data *game_data)
 		printf("Error: Failed to create minimap image\n");
 		exit(1);
 	}
-
-	// Display images ONCE during initialization
 	mlx_image_to_window(game_data->mlx, game_data->world, 0, 0);
 	mlx_image_to_window(game_data->mlx, game_data->m_map, 0, 0);
-
-	// Initialize needs_redraw
-	game_data->needs_redraw = 1; // Force initial render
-	game_data->mouse_sensitivity = 0.00025; // Adjust this value to your liking
+	game_data->needs_redraw = 1;
+	game_data->mouse_sensitivity = 0.00050;
 	game_data->mouse_initialized = 0;
-	// Initialize player direction
 	r_c_init(game_data);
-
-	// Start rendering
 	mlx_loop_hook(game_data->mlx, ray_caster, game_data);
 	mlx_loop_hook(game_data->mlx, ft_hook, game_data);
 	mlx_cursor_hook(game_data->mlx, &mouse_hook, game_data);
