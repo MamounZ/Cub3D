@@ -19,17 +19,17 @@ int check_paths(t_data *game_data)
 
 	fd = open(game_data->ea_tex,O_RDONLY);
 	if (fd == -1)
-		return (1);
+		return (-1);
 	fd = open(game_data->so_tex,O_RDONLY);
 	if (fd == -1)
-		return (1);
+		return (-1);
 	fd = open(game_data->we_tex,O_RDONLY);
 	if (fd == -1)
-		return (1);
+		return (-1);
 	fd = open(game_data->no_tex,O_RDONLY);
 	if (fd == -1)
-		return (1);
-	return (0);
+		return (-1);
+	return (fd);
 }
 
 void free_map(char **map)
@@ -175,13 +175,12 @@ int main(int argc ,char **argv)
 	ft_bzero(&game_data,sizeof(t_data));
 	if(validate_config(fd,&game_data))
 		return (free_and_exit(&game_data , "bad config" ,fd ,1));
-        // if(check_paths)
+        // if(check_paths(game_data) == -1)
         //     return (free_and_exit(&game_data , "bad path" ,fd ,1));
 	if(validate_map (fd , &game_data))
 		return (free_and_exit(&game_data , "bad map" ,fd ,1));
 	print_data(&game_data);
-	mlx_stuff(&game_data);
-
+	//mlx_stuff(&game_data);
 	return (free_and_exit(&game_data ,NULL,fd ,0));
 
 }
