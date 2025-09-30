@@ -10,12 +10,12 @@ int validate_args(char *map_name,int argc)
 	}
 	if (ft_strlen(map_name) <5)
 	{
-		ft_printf("unvaled map name\n");
+		ft_printf("invalid map name\n");
 		return (1);
 	}
 	if (ft_strncmp(map_name + ft_strlen(map_name) - 4, ".cub", 4) != 0)
 	{
-		ft_printf("unvaled map extension\n");
+		ft_printf("invalid map extension\n");
 		return (1);
 	}
 	return (0);
@@ -94,7 +94,7 @@ char *get_id (char *line ,char *id)
 		return (NULL);
 	if (ft_strcmp(id ,"F") == 0 || ft_strcmp(id ,"C") == 0)
 		return (temp);
-	value = malloc(sizeof(char) * (ft_strlen(temp) +1));
+	value = malloc(sizeof(char) * (ft_strlen(temp) + 1));
 	if (!value)
 	{
 		free(temp);
@@ -174,7 +174,6 @@ int validate_map_content_loop (t_data *game_data ,char *valid_content , char *di
 
 int validate_map_content (t_data *game_data)
 {
-
     char	*valid_content;
 	char	*dirictions;
 
@@ -202,7 +201,7 @@ int validate_map(int fd , t_data *game_data)
 	{
         return (1);
 	}
-	
+
 	return (flood_fill(game_data->map_copy, game_data->player_pos.y, game_data->player_pos.x, game_data->map_rows));
    //return (validate_map_spaces(game_data));
 }

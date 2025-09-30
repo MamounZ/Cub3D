@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dkhalil <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:42:42 by mazaid            #+#    #+#             */
-/*   Updated: 2024/10/08 02:52:32 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/30 17:32:02 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "get_next_line_bonus.h"
 
 char	*read_file(int fd, char *left)

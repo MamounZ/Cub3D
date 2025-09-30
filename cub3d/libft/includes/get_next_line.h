@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dkhalil <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 00:50:26 by mazaid            #+#    #+#             */
-/*   Updated: 2024/10/03 15:10:35 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/30 17:35:38 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
@@ -18,7 +19,7 @@
 //# include "./libft.h"
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 2048
+#  define BUFFER_SIZE 1
 # endif
 
 size_t	ft_strlen(const char *str);

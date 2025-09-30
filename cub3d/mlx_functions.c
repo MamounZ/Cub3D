@@ -6,11 +6,67 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/09/29 18:24:53 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/30 17:52:33 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
+
+void free_mlx_stuff(t_data *game_data)
+{
+	mlx_delete_image(game_data->mlx, game_data->world);
+	mlx_delete_image(game_data->mlx, game_data->m_map);
+	mlx_terminate(game_data->mlx);
+}
+
+void cleanup_textures(t_data *game_data)
+{
+	int i;
+
+	i = 0;
+	while (i < 4)
+	{
+		if (game_data->textures[i])
+		{
+			mlx_delete_texture(game_data->textures[i]);
+			game_data->textures[i] = NULL;
+		}
+		i++;
+	}
+}
+
+void cleanup_images(t_data *game_data)
+{
+	if (game_data->world)
+	{
+		mlx_delete_image(game_data->mlx, game_data->world);
+		game_data->world = NULL;
+	}
+	if (game_data->m_map)
+	{
+		mlx_delete_image(game_data->mlx, game_data->m_map);
+		game_data->m_map = NULL;
+	}
+}
+
+void cleanup_mlx(t_data *game_data)
+{
+	if (game_data->mlx)
+	{
+		cleanup_images(game_data);
+		mlx_terminate(game_data->mlx);
+		game_data->mlx = NULL;
+	}
+}
+
+void exit_error(t_data *game_data, char *error_msg)
+{
+	printf("Error\n%s\n", error_msg);
+	cleanup_textures(game_data);
+	cleanup_mlx(game_data);
+	// Add your other cleanup here (free map, etc.)
+	exit(1);
+}
 
 void put_block(t_data *game_data, int x, int y, int size, uint32_t color)
 {
@@ -208,82 +264,14 @@ void ft_hook(void *arg)
 	rotSpeed = 0.04;
 	buffer = 0.1;
 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
-		mlx_close_window(game_data->mlx);
+		{
+			// free_mlx_stuff(game_data);
+			mlx_close_window(game_data->mlx);
+		}
 	movment_hooks(game_data, moveSpeed, buffer);
 	movment_hooks2(game_data, moveSpeed, buffer);
 	rotation_hooks(game_data, rotSpeed);
 }
-
-// void ft_hook(void *arg)
-// {
-// 	t_data *game_data;
-// 	double moveSpeed;
-// 	double rotSpeed;
-// 	double buffer;
-// 	double game_data->move.x;
-// 	double game_data->move.y;
-
-// 	game_data = (t_data *)arg;
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
-// 		mlx_close_window(game_data->mlx);
-// 	moveSpeed = 0.05;
-// 	rotSpeed = 0.04;
-// 	buffer = 0.1;
-
-// 	// Move forward
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_W))
-// 	{
-// 		game_data->move.x = game_data->player_dir.x * moveSpeed;
-// 		game_data->move.y = game_data->player_dir.y * moveSpeed;
-// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
-// 		game_data->needs_redraw = 1;
-// 	}
-
-// 	// Move backward
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_S))
-// 	{
-// 		game_data->move.x = -game_data->player_dir.x * moveSpeed;
-// 		game_data->move.y = -game_data->player_dir.y * moveSpeed;
-// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
-// 		game_data->needs_redraw = 1;
-// 	}
-
-// 	// Move right (strafe)
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_D))
-// 	{
-// 		game_data->move.x = -game_data->player_dir.y * moveSpeed;
-// 		game_data->move.y = game_data->player_dir.x * moveSpeed;
-// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
-// 		game_data->needs_redraw = 1;
-// 	}
-
-// 	// Move left (strafe)
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_A))
-// 	{
-// 		game_data->move.x = game_data->player_dir.y * moveSpeed;
-// 		game_data->move.y = -game_data->player_dir.x * moveSpeed;
-// 		move_player_with_sliding(game_data, game_data->move.x, game_data->move.y, buffer);
-// 		game_data->needs_redraw = 1;
-// 	}
-// 	// Rotate right
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
-// 	{
-// 		rotation(&game_data->player_dir, rotSpeed);
-// 		rotation(&game_data->plan, rotSpeed);
-// 		normalize(&game_data->player_dir); // Prevent drift
-// 		normalize(&game_data->plan); // Keep plan consistent
-// 		game_data->needs_redraw = 1;
-// 	}
-// 	// Rotate left
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
-// 	{
-// 		rotation(&game_data->player_dir, -rotSpeed);
-// 		rotation(&game_data->plan, -rotSpeed);
-// 		normalize(&game_data->player_dir); // Prevent drift
-// 		normalize(&game_data->plan); // Keep plan consistent
-// 		game_data->needs_redraw = 1;
-// 	}
-// }
 
 void dir_init(t_data *game_data, double theta)
 {
@@ -596,4 +584,5 @@ void mlx_stuff(t_data *game_data)
 	mlx_cursor_hook(game_data->mlx, &mouse_hook, game_data);
 	mlx_set_cursor_mode(game_data->mlx, MLX_MOUSE_HIDDEN);
 	mlx_loop(game_data->mlx);
+	free_mlx_stuff(game_data);
 }
