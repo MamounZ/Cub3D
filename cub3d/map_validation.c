@@ -1,39 +1,39 @@
 
 #include "./cub3d.h"
 
-int check_edges(t_data *game)
-{
-    int	i;
-    int	j;
-	size_t counter;
-	int after_spaces;
+// int check_edges(t_data *game)
+// {
+//     int	i;
+//     int	j;
+// 	size_t counter;
+// 	int after_spaces;
 
-	i = 0;
-    while (game->map[i])
-    {
-		j = 0;
-		counter = 0;
-		skip_spaces(game->map[i],&j);
-		after_spaces = j;
-		if ( i == 0 || !game->map[i +1] )
-		{
-			while (game->map[i][j] == '1' || (ft_is_space(game->map[i][j])))
-			{
-				counter++;
-				j++;
-			}
-			if (counter != ft_strlen (game->map[i] + after_spaces))
-				return (1);
-		}
-		else
-		{
-			if (game->map[i][after_spaces] !='1' || (game->map[i][ft_strlen(game->map[i]) -1] != '1' && !ft_is_space( game->map[i][ft_strlen(game->map[i]) -1]) ))
-				return (1);
-		}
-        i++;
-    }
-	return (0);
-}
+// 	i = 0;
+//     while (game->map[i])
+//     {
+// 		j = 0;
+// 		counter = 0;
+// 		skip_spaces(game->map[i],&j);
+// 		after_spaces = j;
+// 		if ( i == 0 || !game->map[i +1] )
+// 		{
+// 			while (game->map[i][j] == '1' || (ft_is_space(game->map[i][j])))
+// 			{
+// 				counter++;
+// 				j++;
+// 			}
+// 			if (counter != ft_strlen (game->map[i] + after_spaces))
+// 				return (1);
+// 		}
+// 		else
+// 		{
+// 			if (game->map[i][after_spaces] !='1' || (game->map[i][ft_strlen(game->map[i]) -1] != '1' && !ft_is_space( game->map[i][ft_strlen(game->map[i]) -1]) ))
+// 				return (1);
+// 		}
+//         i++;
+//     }
+// 	return (0);
+// }
 
 static char *skip_initial_newlines(int fd)
 {
@@ -112,26 +112,32 @@ int get_map(int fd, t_data *data)
 }
 
 
-int flood_fill(char **map, int x, int y, int map_rows)
-{
-    if (x < 0 || y < 0 || x >= map_rows || y >= (int)ft_strlen(map[x]))
-	{
-		ft_printf("\nout of bounds x=%d y=%d\n",x,y);
-        return (1);
-	}
-    //if (ft_is_space(map[x][y]))
-       // return (1);
-    if (map[x][y] == '1' || map[x][y] == 'T')
-        return (0);
-    map[x][y] = 'T';
-    if (flood_fill(map, x + 1, y, map_rows))
-        return (1);
-    if (flood_fill(map, x - 1, y, map_rows))
-        return (1);
-    if (flood_fill(map, x, y + 1, map_rows))
-        return (1);
-    if (flood_fill(map, x, y - 1, map_rows))
-        return (1);
 
-    return (0);
+int flood_fill(char **map, int x, int y, int rows)
+{
+	if (x < 0 || y < 0 || x >= rows || y >= (int)ft_strlen(map[x]))
+		return (1);
+	if (ft_is_space(map[x][y]))
+		return (1);
+	if (map[x][y] == '1' || map[x][y] == 'T')
+		return (0);
+	map[x][y] = 'T';
+	if (flood_fill(map, x + 1, y, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y, rows))
+		return (1);
+	if (flood_fill(map, x, y + 1, rows))
+		return (1);
+	if (flood_fill(map, x, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y + 1, rows))
+		return (1);
+	if (flood_fill(map, x + 1, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x + 1, y + 1, rows))
+		return (1);
+	return (0);
 }
+
