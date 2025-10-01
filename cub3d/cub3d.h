@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/26 19:09:41 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/09/30 16:30:08 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_data {
     int		map_done;
 	int		map_rows;
 	int		map_cols;
+    //
 	mlx_t   *mlx;
     mlx_image_t *m_map;
     mlx_image_t *world;
@@ -73,7 +74,7 @@ typedef struct s_data {
     int mouse_x_last;
     int mouse_y_last;
     int mouse_initialized;
-
+    t_dpoint move;
 } t_data;
 
 char    *copy_identifire(char *str);

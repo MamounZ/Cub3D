@@ -10,12 +10,12 @@ int validate_args(char *map_name,int argc)
 	}
 	if (ft_strlen(map_name) <5)
 	{
-		ft_printf("unvaled map name\n");
+		ft_printf("invalid map name\n");
 		return (1);
 	}
 	if (ft_strncmp(map_name + ft_strlen(map_name) - 4, ".cub", 4) != 0)
 	{
-		ft_printf("unvaled map extension\n");
+		ft_printf("invalid map extension\n");
 		return (1);
 	}
 	return (0);
@@ -162,7 +162,6 @@ int validate_map_content_loop (t_data *game_data ,char *valid_content , char *di
 
 int validate_map_content (t_data *game_data)
 {
-
     char	*valid_content;
 	char	*dirictions;
 

@@ -45,7 +45,7 @@ int fill_rgb_values(t_data *game_data, char **rgb, char *id)
 
 	split_len = ft_split_len(rgb);
     i = 0;
-    while (rgb[i] && split_len== 3 )
+    while (rgb[i] && split_len == 3 )
     {
 		if (ft_is_number(rgb[i]))
 			value = ft_atoi(rgb[i]);
