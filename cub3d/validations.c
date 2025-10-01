@@ -29,13 +29,9 @@ int validate_config(int fd ,t_data *game_data)
 
     head = create_configs_list(&head);
     if (!head)
-	{
 		return (1);
-	}
 	if (gnl_loop(fd ,game_data ,head))
-	{
 		return (1);
-	}
    return (0);
 }
 int handle_spaces( char *temp , char *value , int *i , int *j)
@@ -83,29 +79,14 @@ void skip_id_spaces(char *str,int *i ,char *id)
 char *get_id (char *line ,char *id)
 {
 	int i;
-	int j;
 	char *temp;
-	char *value;
 
 	i = 0;
 	skip_id_spaces(line ,&i ,id);
 	temp = ft_strdup(line +i);
 	if (!temp)
 		return (NULL);
-	if (ft_strcmp(id ,"F") == 0 || ft_strcmp(id ,"C") == 0)
-		return (temp);
-	value = malloc(sizeof(char) * (ft_strlen(temp) + 1));
-	if (!value)
-	{
-		free(temp);
-		return (NULL);
-	}
-	i = 0;
-	j = 0;
-	if (id_value_loop(temp , value , i , j))
-		return (NULL);
-	free(temp);
-	return (value);
+	return (temp);
 }
 
 int save_configs(char *line , t_data *game_data , char * id)
@@ -127,7 +108,14 @@ int save_configs(char *line , t_data *game_data , char * id)
 	else if (ft_strcmp(id , "WE") == 0)
 		game_data->we_tex =value;
 	else if (ft_strcmp(id , "C") == 0 || ft_strcmp(id , "F") == 0)
-		validate_f_c(game_data,value ,id);
+	{
+		if(validate_f_c(game_data,value ,id) == 1)
+		{
+			free(id);
+			free(value);
+			return (1);
+		}
+	}
 	free(id);
 	return (0);
 }
@@ -194,14 +182,8 @@ int validate_map(int fd , t_data *game_data)
 
    res = get_map(fd,game_data);
     if (res || !game_data->map || !game_data->map_copy)
-	{
         return (1);
-	}
-    if (validate_map_content (game_data) /*|| check_edges(game_data)*/)
-	{
-        return (1);
-	}
-
+    if (validate_map_content (game_data))
+		return (1);
 	return (flood_fill(game_data->map_copy, game_data->player_pos.y, game_data->player_pos.x, game_data->map_rows));
-   //return (validate_map_spaces(game_data));
 }

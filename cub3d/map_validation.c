@@ -48,7 +48,7 @@ static char *skip_initial_newlines(int fd)
     return (line);
 }
 
-static int handle_newline_after_map(int fd, char *line, char *result ,t_data *data)
+int handle_newline_after_map(int fd, char *line, char *result ,t_data *data)
 {
 	data->map_done = 1;
     while (line && is_empty_line(line))
@@ -65,29 +65,46 @@ static int handle_newline_after_map(int fd, char *line, char *result ,t_data *da
     return (0);
 }
 
-static char *collect_map_lines(int fd, t_data *data, char *result, char *line)
+char *joining_process(int fd, char **line, char *result)
 {
     char *joined;
 
+    joined = ft_strjoin1(result, *line);
+    if (!joined)
+    {
+        free(result);
+        free_gnl(fd,*line,NULL);
+        return (NULL);
+    }
+    free(*line);
+	result = joined;
+    return (result);
+}
+char *free_and_return_null(int fd,char *line1,char *line2)
+{
+	free_gnl(fd,line1,NULL);
+	free(line2);
+	return NULL;
+}
+
+static char *collect_map_lines(int fd, t_data *data, char *result, char *line)
+{
+
     while (line && !data->map_done)
     {
-        if (line[0] == '\n')
+      if (is_empty_line(line))
         {
             if (handle_newline_after_map(fd, line, result,data))
                 return (NULL);
         }
         else
         {
-            joined = ft_strjoin1(result, line);
-            if (!joined)
-            {
-                free(result);
-                free_gnl(fd, line, NULL);
-                return (NULL);
-            }
-            free(line);
-            result = joined;
+            result = joining_process(fd,&line,result);
+			if (!result)
+				return free_and_return_null(fd,line,result);
             line = get_next_line(fd);
+            if(!line)
+				return free_and_return_null(fd,line,result);
         }
     }
     return (result);
@@ -98,9 +115,9 @@ int get_map(int fd, t_data *data)
     char *line;
     char *result;
 
-    result = ft_strdup("");
-    if (!result)
-        return (1);
+    result = NULL;
+    // if (!result)
+    //     return (1);
     line = skip_initial_newlines(fd);
     result = collect_map_lines(fd, data, result, line);
     if (!result)
