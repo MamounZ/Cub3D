@@ -76,18 +76,53 @@ void skip_id_spaces(char *str,int *i ,char *id)
 	*i += ft_strlen(id);
 	skip_spaces(str ,i);
 }
-char *get_id (char *line ,char *id)
+
+char *get_id(char *line, char *id)
 {
 	int i;
 	char *temp;
+	char *value;
 
 	i = 0;
-	skip_id_spaces(line ,&i ,id);
-	temp = ft_strdup(line +i);
+	skip_id_spaces(line, &i, id);
+	temp = ft_strdup(line + i);
 	if (!temp)
 		return (NULL);
-	return (temp);
+	if (ft_strcmp(id, "F") == 0 || ft_strcmp(id, "C") == 0)
+		return (temp);
+	value = ft_strtrim(temp, " \t\n\v\f\r");
+	free(temp);
+	if (!value)
+		return NULL;
+	return (value);
 }
+// char *get_id(char *line, char *id)
+// {
+// 	int i;
+// 	int j;
+// 	char *temp;
+// 	char *value;
+
+// 	i = 0;
+// 	skip_id_spaces(line, &i, id);
+// 	temp = ft_strdup(line + i);
+// 	if (!temp)
+// 		return (NULL);
+// 	if (ft_strcmp(id, "F") == 0 || ft_strcmp(id, "C") == 0)
+// 		return (temp);
+// 	value = malloc(sizeof(char) * (ft_strlen(temp) + 1));
+// 	if (!value)
+// 	{
+// 		free(temp);
+// 		return (NULL);
+// 	}
+// 	i = 0;
+// 	j = 0;
+// 	if (id_value_loop(temp, value, i, j))
+// 		return (NULL);
+// 	free(temp);
+// 	return (value);
+// }
 
 int save_configs(char *line , t_data *game_data , char * id)
 {

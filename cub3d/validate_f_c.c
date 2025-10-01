@@ -1,30 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate_f_c.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/01 18:47:40 by mazaid            #+#    #+#             */
+/*   Updated: 2025/10/01 18:47:41 by mazaid           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 
 #include "./cub3d.h"
 
 int ft_is_number(char *str)
 {
-	int i;
-	int	is_number;
+    int i;
+    int is_number;
+    char *trimed;
+    int posetive;
 
-	i = 0;
-	is_number = 0;
-	char *trimed = ft_strtrim(str," \t\n\v\f\r");
-	if (!trimed)
-		return (0);
-	if (trimed[0] == '\0')
+    posetive = 0;
+    is_number = 0;
+    trimed = ft_strtrim(str, " \t\n\v\f\r");
+    if (!trimed)
+        return (0);
+    if (trimed[0] == '\0')
     {
         free(trimed);
         return 0;
     }
-	i = 0;
-    while (ft_isdigit(trimed[i]))
-		i++;
-	if (trimed[i] == '\0' && i <= 3)
-		is_number = 1;
+    i = 0;
+    while (trimed[posetive] == '+')
+        posetive++;
+    while (ft_isdigit(trimed[i + posetive]))
+        i++;
+    if (trimed[i + posetive] == '\0' && i <= 3)
+        is_number = 1;
     free(trimed);
     return (is_number);
-	
 }
+
+// int ft_is_number(char *str)
+// {
+// 	int i;
+// 	int	is_number;
+
+// 	i = 0;
+// 	is_number = 0;
+// 	char *trimed = ft_strtrim(str," \t\n\v\f\r");
+// 	if (!trimed)
+// 		return (0);
+// 	if (trimed[0] == '\0')
+//     {
+//         free(trimed);
+//         return 0;
+//     }
+// 	i = 0;
+//     while (ft_isdigit(trimed[i]))
+// 		i++;
+// 	if (trimed[i] == '\0' && i <= 3)
+// 		is_number = 1;
+//     free(trimed);
+//     return (is_number);
+
+// }
 
 int store_rgb_value(t_data *game_data, char *id, int index, int value)
 {

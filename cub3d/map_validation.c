@@ -35,18 +35,31 @@
 // 	return (0);
 // }
 
-static char *skip_initial_newlines(int fd)
+char *skip_initial_newlines(int fd)
 {
     char *line;
 
     line = get_next_line(fd);
-    while (line && line[0] == '\n')
+    while (line && is_empty_line(line))
     {
         free(line);
         line = get_next_line(fd);
     }
     return (line);
 }
+
+// static char *skip_initial_newlines(int fd)
+// {
+//     char *line;
+
+//     line = get_next_line(fd);
+//     while (line && line[0] == '\n')
+//     {
+//         free(line);
+//         line = get_next_line(fd);
+//     }
+//     return (line);
+// }
 
 int handle_newline_after_map(int fd, char *line, char *result ,t_data *data)
 {
@@ -101,10 +114,13 @@ static char *collect_map_lines(int fd, t_data *data, char *result, char *line)
         {
             result = joining_process(fd,&line,result);
 			if (!result)
-				return free_and_return_null(fd,line,result);
+				{
+                    free_gnl(fd, line, NULL);
+                    return (NULL);
+                }
             line = get_next_line(fd);
             if(!line)
-				return free_and_return_null(fd,line,result);
+                free_gnl(fd, line, NULL);
         }
     }
     return (result);
@@ -116,17 +132,38 @@ int get_map(int fd, t_data *data)
     char *result;
 
     result = NULL;
-    // if (!result)
-    //     return (1);
     line = skip_initial_newlines(fd);
+    if (!line)
+        return (1);
     result = collect_map_lines(fd, data, result, line);
     if (!result)
+    {
+        free(line);
         return (1);
+    }
     data->map = ft_split(result, '\n');
     data->map_copy = ft_split(result, '\n');
     free(result);
     return (0);
 }
+
+// int get_map(int fd, t_data *data)
+// {
+//     char *line;
+//     char *result;
+
+//     result = NULL;
+//     // if (!result)
+//     //     return (1);
+//     line = skip_initial_newlines(fd);
+//     result = collect_map_lines(fd, data, result, line);
+//     if (!result)
+//         return (1);
+//     data->map = ft_split(result, '\n');
+//     data->map_copy = ft_split(result, '\n');
+//     free(result);
+//     return (0);
+// }
 
 
 
