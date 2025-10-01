@@ -136,7 +136,7 @@ int free_and_exit(t_data *game_data,char *message ,int fd,int ret)
 	if(game_data)
 		free_data(game_data);
 	if (message)
-		ft_printf("Error : %s\n",message);
+		printf("Error : %s\n",message);
 	close (fd);
 	return (ret);
 }

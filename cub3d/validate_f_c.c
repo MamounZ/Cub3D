@@ -3,22 +3,27 @@
 
 int ft_is_number(char *str)
 {
-    size_t i;
-	size_t spaces_count;
+	int i;
+	int	is_number;
 
-    i = 0;
-	while (ft_is_space (str[i]))
+	i = 0;
+	is_number = 0;
+	char *trimed = ft_strtrim(str," \t\n\v\f\r");
+	if (!trimed)
+		return (0);
+	if (trimed[0] == '\0')
+    {
+        free(trimed);
+        return 0;
+    }
+	i = 0;
+    while (ft_isdigit(trimed[i]))
 		i++;
-	spaces_count = i;
-    while (ft_isdigit(str[i]))
-		i++;
-    while (ft_is_space (str[i]))
-	{
-		i++;
-		spaces_count++;
-	}
-	//ft_printf ("str = %s\n",str); ft_printf ("i = %d\n",i); ft_printf ("len = %d\n",ft_strlen(str));
-    return (i > 0 && i == ft_strlen(str) && spaces_count != i);
+	if (trimed[i] == '\0' && i <= 3)
+		is_number = 1;
+    free(trimed);
+    return (is_number);
+	
 }
 
 int store_rgb_value(t_data *game_data, char *id, int index, int value)
@@ -53,17 +58,30 @@ int fill_rgb_values(t_data *game_data, char **rgb, char *id)
     return (i);
 }
 
-void validate_f_c(t_data *game_data, char *value, char *id)
+int validate_f_c(t_data *game_data, char *value, char *id)
 {
     char **rgb;
     int count;
+    int	i;
+	int commas_count;
 
+	i = 0;
+	commas_count = 0;
+	while (value[i])
+	{
+		if (value[i] == ',')
+			commas_count++;
+		if(commas_count > 2)
+			return (1);
+		i++;
+	}
     rgb = ft_split(value, ',');
     if (!rgb)
-        return;
+        return (1);
     count = fill_rgb_values(game_data, rgb, id);
     if (count != 3)
         game_data->ceiling_rgb[0] = -1;
 		free (value);
     ft_free_split1(rgb);
+    return (0);
 }

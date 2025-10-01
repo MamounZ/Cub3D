@@ -93,7 +93,7 @@ int validate_config(int fd ,t_data *game_data);
 int validate_args(char *map_name,int argc);
 
 int    get_map(int fd,t_data *data);
-void validate_f_c(t_data *game_data, char *value, char *id);
+int validate_f_c(t_data *game_data, char *value, char *id);
 int fill_rgb_values(t_data *game_data, char **rgb, char *id);
 int check_edges(t_data *geme);
 int flood_fill(char **map, int x, int y,int rows);

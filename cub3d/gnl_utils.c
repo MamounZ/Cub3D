@@ -33,8 +33,6 @@ char *process_line(char *line, t_list **head )
     value = copy_identifire(line + i);
     if (!value || remove_id_from_list(head,value))
 	{
-		//print_list(*head);
-		//free_gnl(-1,NULL,head,value);
 		free (value);
         return (NULL);
 	}
