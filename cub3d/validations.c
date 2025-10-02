@@ -2,7 +2,6 @@
 
 int validate_args(char *map_name,int argc)
 {
-
 	if (argc !=2)
 	{
 		ft_printf("invalid args\n");
@@ -28,11 +27,12 @@ int validate_config(int fd ,t_data *game_data)
 	head = NULL;
 
     head = create_configs_list(&head);
-    if (!head)
+	if (!head)
 		return (1);
 	if (gnl_loop(fd ,game_data ,head))
 		return (1);
-   return (0);
+
+	return (0);
 }
 int handle_spaces( char *temp , char *value , int *i , int *j)
 {
@@ -135,13 +135,13 @@ int save_configs(char *line , t_data *game_data , char * id)
 		return (1);
 	}
 	if (ft_strcmp(id , "NO") == 0)
-		game_data->no_tex =value;
+		game_data->tex_paths[0] =value;
 	else if (ft_strcmp(id , "SO") == 0)
-		game_data->so_tex =value;
+		game_data->tex_paths[1] =value;
 	else if (ft_strcmp(id , "EA") == 0)
-		game_data->ea_tex =value;
+		game_data->tex_paths[2] =value;
 	else if (ft_strcmp(id , "WE") == 0)
-		game_data->we_tex =value;
+		game_data->tex_paths[3] =value;
 	else if (ft_strcmp(id , "C") == 0 || ft_strcmp(id , "F") == 0)
 	{
 		if(validate_f_c(game_data,value ,id) == 1)
@@ -160,8 +160,8 @@ void check_for_player(char *dirictions,t_data *game_data,int i , int j)
 	{
 		game_data->there_is_a_player++;
 		game_data->starting_dir = game_data->map[i][j];
-		game_data->player_pos.x = j;
-		game_data->player_pos.y = i;
+		game_data->player_pos.x = j + 0.4;
+		game_data->player_pos.y = i + 0.4;
 	}
 
 }

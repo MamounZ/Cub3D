@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/09/30 17:52:33 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/02 17:33:09 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,58 +14,20 @@
 
 void free_mlx_stuff(t_data *game_data)
 {
-	mlx_delete_image(game_data->mlx, game_data->world);
-	mlx_delete_image(game_data->mlx, game_data->m_map);
-	mlx_terminate(game_data->mlx);
-}
-
-void cleanup_textures(t_data *game_data)
-{
 	int i;
 
 	i = 0;
+	if (game_data->world)
+		mlx_delete_image(game_data->mlx, game_data->world);
+	if (game_data->m_map)
+		mlx_delete_image(game_data->mlx, game_data->m_map);
 	while (i < 4)
 	{
 		if (game_data->textures[i])
-		{
 			mlx_delete_texture(game_data->textures[i]);
-			game_data->textures[i] = NULL;
-		}
 		i++;
 	}
-}
-
-void cleanup_images(t_data *game_data)
-{
-	if (game_data->world)
-	{
-		mlx_delete_image(game_data->mlx, game_data->world);
-		game_data->world = NULL;
-	}
-	if (game_data->m_map)
-	{
-		mlx_delete_image(game_data->mlx, game_data->m_map);
-		game_data->m_map = NULL;
-	}
-}
-
-void cleanup_mlx(t_data *game_data)
-{
-	if (game_data->mlx)
-	{
-		cleanup_images(game_data);
-		mlx_terminate(game_data->mlx);
-		game_data->mlx = NULL;
-	}
-}
-
-void exit_error(t_data *game_data, char *error_msg)
-{
-	printf("Error\n%s\n", error_msg);
-	cleanup_textures(game_data);
-	cleanup_mlx(game_data);
-	// Add your other cleanup here (free map, etc.)
-	exit(1);
+	mlx_terminate(game_data->mlx);
 }
 
 void put_block(t_data *game_data, int x, int y, int size, uint32_t color)
@@ -371,16 +333,23 @@ void draw_texture_on_wall(t_data *game_data, int *texnum, int *texx, int start, 
 
 void draw_ceiling_floor(t_data *game_data, int x, int start, int end)
 {
-	uint32_t ceiling_color = rgb_to_int(game_data->ceiling_rgb);
-	uint32_t floor_color = rgb_to_int(game_data->floor_rgb);
+	uint32_t ceiling_color;
+	uint32_t floor_color;
+	int y;
 
-	for (int y = 0; y < start; y++)
+	y = 0;
+	ceiling_color = rgb_to_int(game_data->ceiling_rgb);
+	floor_color = rgb_to_int(game_data->floor_rgb);
+	while (y < start)
 	{
 		mlx_put_pixel(game_data->world, x, y, ceiling_color);
+		y++;
 	}
-	for (int y = end + 1; y < HEIGHT; y++)
+	y = end + 1;
+	while (y < HEIGHT)
 	{
 		mlx_put_pixel(game_data->world, x, y, floor_color);
+		y++;
 	}
 }
 
@@ -469,7 +438,10 @@ void get_wall_height(t_data *game_data, int *wallstart, int *wallend)
 		game_data->perpwalldist = game_data->side_dist.x - game_data->delta_dist.x;
 	else
 		game_data->perpwalldist = game_data->side_dist.y - game_data->delta_dist.y;
-	game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
+	if (game_data->perpwalldist == 0)
+		game_data->lineHeight = (int)(HEIGHT / 0.000001);
+	else
+		game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
 	*wallstart = -game_data->lineHeight / 2 + HEIGHT / 2;
 	*wallend = game_data->lineHeight / 2 + HEIGHT / 2;
 }
@@ -524,57 +496,36 @@ void mouse_hook(double xpos, double ypos, void *param)
 	mlx_set_mouse_pos(game_data->mlx, WIDTH / 2, HEIGHT / 2);
 }
 
-void mlx_stuff(t_data *game_data)
+void mlx_stuff_init(t_data *game_data)
 {
+	int i;
+
+	i = 0;
 	game_data->mlx = mlx_init(WIDTH, HEIGHT, "Cub3D", true);
 	if (!game_data->mlx)
+		free_and_exit(game_data, "MLX initialization failed", 1);
+	while (i < 4)
 	{
-		printf("Error: MLX initialization failed\n");
-		exit(1);
-	}
-	if (!game_data->no_tex || !game_data->so_tex || !game_data->we_tex || !game_data->ea_tex)
-	{
-		printf("Error: Missing texture path\n");
-		exit(1);
-	}
-	game_data->textures[0] = mlx_load_png(game_data->no_tex);
-	if (!game_data->textures[0])
-	{
-		printf("Error: Failed to load texture %s\n", game_data->no_tex);
-		exit(1);
-	}
-	game_data->textures[1] = mlx_load_png(game_data->so_tex);
-	if (!game_data->textures[1])
-	{
-		printf("Error: Failed to load texture %s\n", game_data->so_tex);
-		exit(1);
-	}
-	game_data->textures[2] = mlx_load_png(game_data->ea_tex);
-	if (!game_data->textures[2])
-	{
-		printf("Error: Failed to load texture %s\n", game_data->ea_tex);
-		exit(1);
-	}
-	game_data->textures[3] = mlx_load_png(game_data->we_tex);
-	if (!game_data->textures[3])
-	{
-		printf("Error: Failed to load texture %s\n", game_data->we_tex);
-		exit(1);
+		game_data->textures[i] = mlx_load_png(game_data->tex_paths[i]);
+		if (!game_data->textures[i])
+			free_and_exit(game_data, "Failed to load texture", 1);
+		i++;
 	}
 	game_data->world = mlx_new_image(game_data->mlx, WIDTH, HEIGHT);
 	if (!game_data->world)
-	{
-		printf("Error: Failed to create world image\n");
-		exit(1);
-	}
+		free_and_exit(game_data, "Failed to create world image", 1);
 	game_data->m_map = mlx_new_image(game_data->mlx, 340, 180);
 	if (!game_data->m_map)
-	{
-		printf("Error: Failed to create minimap image\n");
-		exit(1);
-	}
-	mlx_image_to_window(game_data->mlx, game_data->world, 0, 0);
-	mlx_image_to_window(game_data->mlx, game_data->m_map, 0, 0);
+		free_and_exit(game_data, "Failed to create minimap image", 1);
+	if (mlx_image_to_window(game_data->mlx, game_data->world, 0, 0) == -1)
+		free_and_exit(game_data, "Failed to load game image", 1);
+	if (mlx_image_to_window(game_data->mlx, game_data->m_map, 0, 0) == -1)
+		free_and_exit(game_data, "Failed to load minimap image", 1);
+}
+
+void mlx_stuff(t_data *game_data)
+{
+	mlx_stuff_init(game_data);
 	game_data->needs_redraw = 1;
 	game_data->mouse_sensitivity = 0.00050;
 	game_data->mouse_initialized = 0;
@@ -584,5 +535,4 @@ void mlx_stuff(t_data *game_data)
 	mlx_cursor_hook(game_data->mlx, &mouse_hook, game_data);
 	mlx_set_cursor_mode(game_data->mlx, MLX_MOUSE_HIDDEN);
 	mlx_loop(game_data->mlx);
-	free_mlx_stuff(game_data);
 }

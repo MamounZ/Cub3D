@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/09/30 16:30:08 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/02 13:32:16 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ typedef struct s_dpoint
     double y;
 } t_dpoint;
 
+// char    *no_tex;
+// char    *so_tex;
+// char    *we_tex;
+// char    *ea_tex;
 typedef struct s_data {
-    char    *no_tex;
-    char    *so_tex;
-    char    *we_tex;
-    char    *ea_tex;
-    char    *sprite_tex;
+    char    *tex_paths[4];
     mlx_texture_t *textures[4];
     int     floor_rgb[3];
     int     ceiling_rgb[3];
@@ -50,6 +50,7 @@ typedef struct s_data {
     int		map_done;
 	int		map_rows;
 	int		map_cols;
+    int     fd;
     //
 	mlx_t   *mlx;
     mlx_image_t *m_map;
@@ -92,7 +93,6 @@ void	ft_free_split1(char **split);
 int validate_map(int fd , t_data *game_data);
 int validate_config(int fd ,t_data *game_data);
 int validate_args(char *map_name,int argc);
-
 int    get_map(int fd,t_data *data);
 int validate_f_c(t_data *game_data, char *value, char *id);
 int fill_rgb_values(t_data *game_data, char **rgb, char *id);
@@ -101,3 +101,5 @@ int flood_fill(char **map, int x, int y,int rows);
 int	ft_countwords(char const *s, char c);
 int store_rgb_value(t_data *game_data, char *id, int index, int value);
 void mlx_stuff(t_data *game_data);
+void free_and_exit(t_data *game_data, char *message, int ret);
+void free_mlx_stuff(t_data *game_data);

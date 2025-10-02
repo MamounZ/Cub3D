@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/01 18:41:15 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/02 13:54:08 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,33 @@
 int check_paths(t_data *game_data)
 {
 	int fd;
+	int i;
 
-	fd = open(game_data->ea_tex, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	close(fd);
-	fd = open(game_data->so_tex, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	close(fd);
-	fd = open(game_data->we_tex, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	close(fd);
-	fd = open(game_data->no_tex, O_RDONLY);
-	if (fd == -1)
-		return (-1);
-	close(fd);
+	i = 0;
+	while (i < 4)
+	{
+		fd = open(game_data->tex_paths[i], O_RDONLY);
+		if (fd == -1)
+			return (-1);
+		close(fd);
+		i++;
+	}
+	// fd = open(game_data->ea_tex, O_RDONLY);
+	// if (fd == -1)
+	// 	return (-1);
+	// close(fd);
+	// fd = open(game_data->so_tex, O_RDONLY);
+	// if (fd == -1)
+	// 	return (-1);
+	// close(fd);
+	// fd = open(game_data->we_tex, O_RDONLY);
+	// if (fd == -1)
+	// 	return (-1);
+	// close(fd);
+	// fd = open(game_data->no_tex, O_RDONLY);
+	// if (fd == -1)
+	// 	return (-1);
+	// close(fd);
 	return (fd);
 }
 
@@ -52,21 +62,32 @@ void free_map(char **map)
 		free(map);
 	}
 }
+void free_tex_paths(t_data *data)
+{
+	int i;
 
+	i = 0;
+
+	while (i < 4)
+	{
+		if (data->tex_paths[i])
+			free(data->tex_paths[i]);
+		i++;
+	}
+}
 void free_data(t_data *data)
 {
 	if (!data)
 		return;
-	if (data->no_tex)
-		free(data->no_tex);
-	if (data->so_tex)
-		free(data->so_tex);
-	if (data->we_tex)
-		free(data->we_tex);
-	if (data->ea_tex)
-		free(data->ea_tex);
-	if (data->sprite_tex)
-		free(data->sprite_tex);
+	// if (data->no_tex)
+	// 	free(data->no_tex);
+	// if (data->so_tex)
+	// 	free(data->so_tex);
+	// if (data->we_tex)
+	// 	free(data->we_tex);
+	// if (data->ea_tex)
+	// 	free(data->ea_tex);
+	free_tex_paths(data);
 	free_map(data->map);
 	free_map(data->map_copy);
 }
@@ -89,11 +110,10 @@ void print_data(const t_data *data)
 {
 	int i;
 
-	printf("NO texture: %s\n", data->no_tex ? data->no_tex : "(null)");
-	printf("SO texture: %s\n", data->so_tex ? data->so_tex : "(null)");
-	printf("WE texture: %s\n", data->we_tex ? data->we_tex : "(null)");
-	printf("EA texture: %s\n", data->ea_tex ? data->ea_tex : "(null)");
-	//  printf("Sprite texture: %s\n", data->sprite_tex ? data->sprite_tex : "(null)");
+	// printf("NO texture: %s\n", data->no_tex ? data->no_tex : "(null)");
+	// printf("SO texture: %s\n", data->so_tex ? data->so_tex : "(null)");
+	// printf("WE texture: %s\n", data->we_tex ? data->we_tex : "(null)");
+	// printf("EA texture: %s\n", data->ea_tex ? data->ea_tex : "(null)");
 
 	printf("Ceiling RGB: %d, %d, %d\n",
 		   data->ceiling_rgb[0], data->ceiling_rgb[1], data->ceiling_rgb[2]);
@@ -127,14 +147,16 @@ void print_data(const t_data *data)
 	// printf("Configs done: %d\n", data->configs_done);
 }
 
-int free_and_exit(t_data *game_data, char *message, int fd, int ret)
+void free_and_exit(t_data *game_data, char *message, int ret)
 {
 	if (game_data)
 		free_data(game_data);
 	if (message)
-		printf("Error : %s\n", message);
-	close(fd);
-	return (ret);
+		printf("Error\n%s\n", message);
+	if (game_data->mlx)
+		free_mlx_stuff(game_data);
+	close(game_data->fd);
+	exit (ret);
 }
 /*
 int check_after_map(int fd)
@@ -159,26 +181,24 @@ int check_after_map(int fd)
 
 int main(int argc, char **argv)
 {
-	int fd;
 	t_data game_data;
 
-	// game_data = NULL;
 	if (validate_args(argv[1], argc))
 		return (1);
-	fd = open(argv[1], O_RDONLY);
-	if (fd == -1)
-		return (1);
 	ft_bzero(&game_data, sizeof(t_data));
-	if (validate_config(fd, &game_data))
-		return (free_and_exit(&game_data, "bad config", fd, 1));
+	game_data.fd = open(argv[1], O_RDONLY);
+	if (game_data.fd == -1)
+		return (1);
+	if (validate_config(game_data.fd, &game_data))
+		free_and_exit(&game_data, "bad config", 1);
 	if (check_paths(&game_data) == -1)
 	{
-		free_gnl(fd, NULL, NULL);
-		return (free_and_exit(&game_data, "bad path", fd, 1));
+		free_gnl(game_data.fd, NULL, NULL);
+		free_and_exit(&game_data, "bad path", 1);
 	}
-	if (validate_map(fd, &game_data))
-		return (free_and_exit(&game_data, "bad map", fd, 1));
+	if (validate_map(game_data.fd, &game_data))
+		free_and_exit(&game_data, "bad map", 1);
 	print_data(&game_data);
 	mlx_stuff(&game_data);
-	return (free_and_exit(&game_data, NULL, fd, 0));
+	free_and_exit(&game_data, NULL, 0);
 }
