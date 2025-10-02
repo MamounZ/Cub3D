@@ -100,7 +100,7 @@ char *free_and_return_null(int fd,char *line1,char *line2)
 	return NULL;
 }
 
-static char *collect_map_lines(int fd, t_data *data, char *result, char *line)
+char *collect_map_lines(int fd, t_data *data, char *result, char *line)
 {
 
     while (line && !data->map_done)
@@ -114,13 +114,16 @@ static char *collect_map_lines(int fd, t_data *data, char *result, char *line)
         {
             result = joining_process(fd,&line,result);
 			if (!result)
-				{
-                    free_gnl(fd, line, NULL);
-                    return (NULL);
-                }
+			{
+				return (NULL);
+			}
             line = get_next_line(fd);
             if(!line)
+            {
+                free(result);
                 free_gnl(fd, line, NULL);
+                return (NULL);
+            }
         }
     }
     return (result);
@@ -137,10 +140,7 @@ int get_map(int fd, t_data *data)
         return (1);
     result = collect_map_lines(fd, data, result, line);
     if (!result)
-    {
-        free(line);
         return (1);
-    }
     data->map = ft_split(result, '\n');
     data->map_copy = ft_split(result, '\n');
     free(result);

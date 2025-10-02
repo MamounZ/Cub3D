@@ -1,6 +1,8 @@
 {
 	"files.associations": {
 		"stdlib.h": "c",
-		"cmath": "c"
+		"cmath": "c",
+		"get_next_line.h": "c",
+		"unistd.h": "c"
 	}
 }

@@ -43,18 +43,25 @@ void	*ft_calloc1(size_t nitem, size_t size)
 
 char *ft_strjoin1(char *left, char *buff)
 {
-    int i, j;
+    int i;
+	int j;
+
     char *temp;
 
     if (!left && !buff)
         return (NULL);
     if (!left)
+	{
         left = ft_calloc1(1, sizeof(char));
-
-    temp = malloc(sizeof(char) * (ft_strlen(left) + ft_strlen(buff) + 1));
-    if (!temp)
+		if(!left)
+			return NULL;
+	}
+	temp = malloc(sizeof(char) * (ft_strlen(left) + ft_strlen(buff) + 1));
+	if (!temp)
+	{
+		free(left);
         return (NULL);
-
+	}
     i = -1;
     while (left[++i])
         temp[i] = left[i];
@@ -62,7 +69,6 @@ char *ft_strjoin1(char *left, char *buff)
     while (buff[++j])
         temp[i++] = buff[j];
     temp[i] = '\0';
-
-    free(left); // free only old left
-    return temp;  // caller must free buff (line) after join
+    free(left);
+    return temp;
 }

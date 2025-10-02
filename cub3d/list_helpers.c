@@ -65,7 +65,7 @@ char *copy_identifire(char *str)
 	int	i;
 	char *value;
 
-	value = malloc(ft_len_untill_space(str) +1);
+	value = malloc(ft_len_untill_space(str) + 1);
 	if (!value)
 		return (NULL);
 	i = 0;

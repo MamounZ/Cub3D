@@ -166,26 +166,26 @@ void check_for_player(char *dirictions,t_data *game_data,int i , int j)
 
 }
 
-int validate_map_content_loop (t_data *game_data ,char *valid_content , char *dirictions)
+int validate_map_content_loop(t_data *game_data, char *valid_content, char *dirictions)
 {
-	int	i;
-	int	j;
-	int	longest_row;
+	int i;
+	int j;
+	int longest_row;
 
 	longest_row = 0;
 	i = 0;
 	while (game_data->map[i])
 	{
-        j = 0;
-        while (game_data->map[i][j])
-        {
-            if (!ft_strchr(valid_content,game_data->map[i][j]) && !ft_is_space(game_data->map[i][j]))
-                return (1);
-			check_for_player(dirictions,game_data,i,j);
+		j = 0;
+		while (game_data->map[i][j])
+		{
+			if (!ft_strchr(valid_content, game_data->map[i][j]) && (game_data->map[i][j] != ' '))
+				return (1);
+			check_for_player(dirictions, game_data, i, j);
 			if (game_data->there_is_a_player > 1)
 				return (1);
-            j++;
-        }
+			j++;
+		}
 		if (j > longest_row)
 			longest_row = j;
 		i++;
