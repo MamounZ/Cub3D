@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/03 16:16:22 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/03 17:25:10 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,16 @@ void put_mini_map(t_data *game_data)
 {
 	int i;
 	int j;
+	int block_size_w;
+	int block_size_h;
 
 	i = 0;
-	if (game_data->map_rows < game_data->map_cols)
-		game_data->block_size = 340 / game_data->map_cols;
+	block_size_w = 340 / game_data->map_cols;
+	block_size_h = 180 / game_data->map_rows;
+	if (block_size_w < block_size_h)
+		game_data->block_size = block_size_w;
 	else
-		game_data->block_size = 340 / game_data->map_rows;
+		game_data->block_size = block_size_h;
 	while (i < game_data->map_rows)
 	{
 		j = 0;
