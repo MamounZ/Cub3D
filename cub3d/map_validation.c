@@ -105,7 +105,7 @@ char *collect_map_lines(int fd, t_data *data, char *result, char *line)
 
     while (line && !data->map_done)
     {
-      if (is_empty_line(line))
+      if (line[0] == '\n')
         {
             if (handle_newline_after_map(fd, line, result,data))
                 return (NULL);
@@ -119,11 +119,7 @@ char *collect_map_lines(int fd, t_data *data, char *result, char *line)
 			}
             line = get_next_line(fd);
             if(!line)
-            {
-                free(result);
                 free_gnl(fd, line, NULL);
-                return (NULL);
-            }
         }
     }
     return (result);
