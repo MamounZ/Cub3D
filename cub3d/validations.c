@@ -160,8 +160,8 @@ void check_for_player(char *dirictions,t_data *game_data,int i , int j)
 	{
 		game_data->there_is_a_player++;
 		game_data->starting_dir = game_data->map[i][j];
-		game_data->player_pos.x = j + 0.4;
-		game_data->player_pos.y = i + 0.4;
+		game_data->player_pos.x = j + 0.5;
+		game_data->player_pos.y = i + 0.5;
 	}
 
 }
