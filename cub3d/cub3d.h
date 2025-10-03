@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:43 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/02 13:32:16 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/03 20:47:19 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,3 +103,31 @@ int store_rgb_value(t_data *game_data, char *id, int index, int value);
 void mlx_stuff(t_data *game_data);
 void free_and_exit(t_data *game_data, char *message, int ret);
 void free_mlx_stuff(t_data *game_data);
+void put_block(t_data *game_data, int x, int y, int size, uint32_t color);
+void draw_mm_blocks(t_data *game_data, int i, int j);
+void put_mini_map(t_data *game_data);
+void rotation(t_dpoint *vector, double theta);
+void normalize(t_dpoint *vector);
+int is_position_safe(t_data *game_data, double x, double y, double buffer);
+void move_player_with_sliding(t_data *game_data, double buffer);
+void movment_hooks(t_data *game_data, double moveSpeed, double buffer);
+void movment_hooks2(t_data *game_data, double moveSpeed, double buffer);
+void rotation_hooks(t_data *game_data, double rotSpeed);
+void ft_hook(void *arg);
+void dir_init(t_data *game_data, double theta);
+void plan_init(t_data *game_data, double x, double y);
+void r_c_init(t_data *game_data);
+uint32_t get_texture_pixel(mlx_texture_t *texture, int x, int y);
+int rgb_to_int(int *rgb);
+void Determine_texture(t_data *game_data, int *texnum);
+void calculate_wall_hit_pos_to_texture(t_data *game_data, double *wallx, int *texx, int *texnum);
+void draw_texture_on_wall(t_data *game_data, int *texnum, int *texx, int start, int end, int x);
+void mouse_hook(double xpos, double ypos, void *param);
+void dda_init(t_data *game_data, int x);
+void dda_init_2(t_data *game_data);
+void dda_loop(t_data *game_data);
+void get_wall_height(t_data *game_data, int *wallstart, int *wallend);
+void ray_caster(void *arg);
+void free_mlx_stuff(t_data *game_data);
+void draw_ceiling_floor(t_data *game_data, int x, int start, int end);
+void draw_vertical_line(t_data *game_data, int x, int start, int end);

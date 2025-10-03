@@ -2,7 +2,7 @@
 SO ./textures/south.png
 WE                                     ./textures/west.png
 EA ./textures/east.png
-F	180,120  ,  80
+F	180,120  ,80
 
 
 C						200,		200,150
