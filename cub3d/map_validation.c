@@ -64,11 +64,11 @@ char *skip_initial_newlines(int fd)
 int handle_newline_after_map(int fd, char *line, char *result ,t_data *data)
 {
 	data->map_done = 1;
-    while (line && is_empty_line(line))
+    while (line && line[0] == '\n')
     {
         free(line);
         line = get_next_line(fd);
-        if (line && !is_empty_line(line))
+        if (line && line[0] != '\n')
         {
             free_gnl(fd, line, NULL);
             free(result);
