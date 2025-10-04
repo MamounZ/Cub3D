@@ -3,20 +3,77 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 14:50:23 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 #include <stdlib.h>
 
-int check_paths(t_data *var)
+int	save_configs(char *line, t_data *var, char *id)
 {
-	int fd;
-	int i;
+	char	*value;
+
+	value = get_id(line, id);
+	if (!value)
+	{
+		free(id);
+		return (1);
+	}
+	choose_config(var, id, value);
+	if (ft_strcmp(id, "C") == 0 || ft_strcmp(id, "F") == 0)
+	{
+		if (validate_f_c(var, value, id) == 1)
+		{
+			free(id);
+			free(value);
+			return (1);
+		}
+	}
+	free(id);
+	return (0);
+}
+
+int	validate_args(char *map_name, int argc)
+{
+	if (argc != 2)
+	{
+		ft_printf("invalid args\n");
+		return (1);
+	}
+	if (ft_strlen(map_name) < 5)
+	{
+		ft_printf("invalid map name\n");
+		return (1);
+	}
+	if (ft_strncmp(map_name + ft_strlen(map_name) - 4, ".cub", 4) != 0)
+	{
+		ft_printf("invalid map extension\n");
+		return (1);
+	}
+	return (0);
+}
+
+int	validate_config(int fd, t_data *var)
+{
+	t_list	*head;
+
+	head = NULL;
+	head = create_configs_list(&head);
+	if (!head)
+		return (1);
+	if (gnl_loop(fd, var, head))
+		return (1);
+	return (0);
+}
+
+int	check_paths(t_data *var)
+{
+	int	fd;
+	int	i;
 
 	i = 0;
 	while (i < 4)
@@ -27,161 +84,58 @@ int check_paths(t_data *var)
 		close(fd);
 		i++;
 	}
-	// fd = open(var->ea_tex, O_RDONLY);
-	// if (fd == -1)
-	// 	return (-1);
-	// close(fd);
-	// fd = open(var->so_tex, O_RDONLY);
-	// if (fd == -1)
-	// 	return (-1);
-	// close(fd);
-	// fd = open(var->we_tex, O_RDONLY);
-	// if (fd == -1)
-	// 	return (-1);
-	// close(fd);
-	// fd = open(var->no_tex, O_RDONLY);
-	// if (fd == -1)
-	// 	return (-1);
-	// close(fd);
 	return (fd);
 }
 
-void free_map(char **map)
+// void	print_list(t_list *head)
+// {
+// 	t_list	*temp;
+
+// 	temp = head;
+// 	while (temp)
+// 	{
+// 		ft_printf("%s->\n", temp->content);
+// 		temp = temp->next;
+// 	}
+// }
+// #include <stdio.h>
+
+// void	print_data(const t_data *data)
+// {
+// 	int	i;
+
+// 	printf("Ceiling RGB: %d, %d, %d\n",
+// 			data->ceiling_rgb[0],
+// 			data->ceiling_rgb[1],
+// 			data->ceiling_rgb[2]);
+// 	printf("Floor RGB: %d, %d, %d\n",
+// 			data->floor_rgb[0],
+// 			data->floor_rgb[1],
+// 			data->floor_rgb[2]);
+// 	if (data->map)
+// 	{
+// 		i = 0;
+// 		while (data->map[i])
+// 		{
+// 			printf("%s\n", data->map[i]);
+// 			i++;
+// 		}
+// 	}
+// 	printf("----------------------------------map copy-----------------------------------------\n");
+// 	if (data->map_copy)
+// 	{
+// 		i = 0;
+// 		while (data->map_copy[i])
+// 		{
+// 			printf("%s\n", data->map_copy[i]);
+// 			i++;
+// 		}
+// 	}
+// }
+
+int	main(int argc, char **argv)
 {
-	int i;
-
-	i = 0;
-	if (map)
-	{
-		i = 0;
-		while (map[i])
-		{
-			free(map[i]);
-			i++;
-		}
-		free(map);
-	}
-}
-void free_tex_paths(t_data *data)
-{
-	int i;
-
-	i = 0;
-
-	while (i < 4)
-	{
-		if (data->tex_paths[i])
-			free(data->tex_paths[i]);
-		i++;
-	}
-}
-void free_data(t_data *data)
-{
-	if (!data)
-		return;
-	// if (data->no_tex)
-	// 	free(data->no_tex);
-	// if (data->so_tex)
-	// 	free(data->so_tex);
-	// if (data->we_tex)
-	// 	free(data->we_tex);
-	// if (data->ea_tex)
-	// 	free(data->ea_tex);
-	free_tex_paths(data);
-	free_map(data->map);
-	free_map(data->map_copy);
-}
-
-void print_list(t_list *head)
-{
-	t_list *temp;
-
-	temp = head;
-
-	while (temp)
-	{
-		ft_printf("%s->\n", temp->content);
-		temp = temp->next;
-	}
-}
-#include <stdio.h>
-
-void print_data(const t_data *data)
-{
-	int i;
-
-	// printf("NO texture: %s\n", data->no_tex ? data->no_tex : "(null)");
-	// printf("SO texture: %s\n", data->so_tex ? data->so_tex : "(null)");
-	// printf("WE texture: %s\n", data->we_tex ? data->we_tex : "(null)");
-	// printf("EA texture: %s\n", data->ea_tex ? data->ea_tex : "(null)");
-
-	printf("Ceiling RGB: %d, %d, %d\n",
-		   data->ceiling_rgb[0], data->ceiling_rgb[1], data->ceiling_rgb[2]);
-	printf("Floor RGB: %d, %d, %d\n",
-		   data->floor_rgb[0], data->floor_rgb[1], data->floor_rgb[2]);
-
-	if (data->map)
-	{
-		i = 0;
-		while (data->map[i])
-		{
-			printf("%s\n", data->map[i]);
-			i++;
-		}
-	}
-	printf("----------------------------------map copy-----------------------------------------\n");
-	if (data->map_copy)
-	{
-		i = 0;
-		while (data->map_copy[i])
-		{
-			printf("%s\n", data->map_copy[i]);
-			i++;
-		}
-	}
-
-	// printf("Map (%dx%d):\n", data->map_width, data->map_height);
-	// =
-	// printf("Player position: (%d, %d)\n", data->player_x, data->player_y);
-	// printf("Player direction: %c\n", data->player_dir);
-	// printf("Configs done: %d\n", data->configs_done);
-}
-
-void free_and_exit(t_data *var, char *message, int ret)
-{
-	if (var)
-		free_data(var);
-	if (message)
-		printf("Error\n%s\n", message);
-	if (var->mlx)
-		free_mlx_stuff(var);
-	close(var->fd);
-	exit(ret);
-}
-/*
-int check_after_map(int fd)
-{
-	char *line;
-
-	line = get_next_line(fd);
-	while (line)
-	{
-		if (!line || line[0] != '\n')
-		{
-			printf("line after map: %s\n",line);
-			return (free_gnl(fd,line,NULL));
-		}
-		free(line);
-		line = get_next_line(fd);
-	}
-
-	return (0);
-}
-*/
-
-int main(int argc, char **argv)
-{
-	t_data var;
+	t_data	var;
 
 	if (validate_args(argv[1], argc))
 		return (1);
@@ -198,7 +152,7 @@ int main(int argc, char **argv)
 	}
 	if (validate_map(var.fd, &var))
 		free_and_exit(&var, "bad map", 1);
-	print_data(&var);
+	// print_data(&var);
 	mlx_stuff(&var);
 	free_and_exit(&var, NULL, 0);
 }

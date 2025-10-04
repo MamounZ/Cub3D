@@ -12,21 +12,21 @@
 
 #include "./cub3d.h"
 
-void dir_init(t_data *var, double theta)
+void	dir_init(t_data *var, double theta)
 {
 	var->player_dir.x = cos(theta);
 	var->player_dir.y = sin(theta);
 	normalize(&var->player_dir);
 }
 
-void plan_init(t_data *var, double x, double y)
+void	plan_init(t_data *var, double x, double y)
 {
 	var->plan.x = x;
 	var->plan.y = y;
 	normalize(&var->plan);
 }
 
-void r_c_init(t_data *var)
+void	r_c_init(t_data *var)
 {
 	if (var->starting_dir == 'N')
 	{

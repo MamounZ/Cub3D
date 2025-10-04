@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_functions.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 17:10:56 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 15:02:34 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 
-void mlx_stuff_init(t_data *var)
+void	mlx_stuff_init(t_data *var)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	var->mlx = mlx_init(WIDTH, HEIGHT, "Cub3D", true);
+	var->mlx = mlx_init(WIDTH, HEIGHT, "Cub3D", false);
 	if (!var->mlx)
 		free_and_exit(var, "MLX initialization failed", 1);
 	while (i < 4)
@@ -39,7 +39,7 @@ void mlx_stuff_init(t_data *var)
 		free_and_exit(var, "Failed to load minimap image", 1);
 }
 
-void mlx_stuff(t_data *var)
+void	mlx_stuff(t_data *var)
 {
 	mlx_stuff_init(var);
 	var->needs_redraw = 1;

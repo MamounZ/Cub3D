@@ -3,38 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   general_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 20:46:31 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 14:55:02 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 
-void free_mlx_stuff(t_data *var)
+char	*get_id(char *line, char *id)
 {
-	int i;
+	int		i;
+	char	*temp;
+	char	*value;
 
 	i = 0;
-	if (var->world)
-		mlx_delete_image(var->mlx, var->world);
-	if (var->m_map)
-		mlx_delete_image(var->mlx, var->m_map);
-	while (i < 4)
-	{
-		if (var->textures[i])
-			mlx_delete_texture(var->textures[i]);
-		i++;
-	}
-	mlx_terminate(var->mlx);
+	skip_spaces(line, &i);
+	i += ft_strlen(id);
+	skip_spaces(line, &i);
+	temp = ft_strdup(line + i);
+	if (!temp)
+		return (NULL);
+	if (ft_strcmp(id, "F") == 0 || ft_strcmp(id, "C") == 0)
+		return (temp);
+	value = ft_strtrim(temp, " \t\n\v\f\r");
+	free(temp);
+	if (!value)
+		return (NULL);
+	return (value);
 }
 
-void draw_ceiling_floor(t_data *var, int x, int start, int end)
+void	draw_ceiling_floor(t_data *var, int x, int start, int end)
 {
-	uint32_t ceiling_color;
-	uint32_t floor_color;
-	int y;
+	uint32_t	ceiling_color;
+	uint32_t	floor_color;
+	int			y;
 
 	y = 0;
 	ceiling_color = rgb_to_int(var->ceiling_rgb);
@@ -52,14 +56,12 @@ void draw_ceiling_floor(t_data *var, int x, int start, int end)
 	}
 }
 
-void draw_vertical_line(t_data *var, int x, int start, int end)
+void	draw_vertical_line(t_data *var, int x, int start, int end)
 {
-	int texnum;
-	double wallx;
-	int texx;
+	double	wallx;
 
 	if (x < 0 || x >= WIDTH)
-		return;
+		return ;
 	if (start < 0)
 		start = 0;
 	if (end >= HEIGHT)
@@ -67,11 +69,40 @@ void draw_vertical_line(t_data *var, int x, int start, int end)
 	draw_ceiling_floor(var, x, start, end);
 	if (start <= end)
 	{
-		if (var->textures[0] && var->textures[1] && var->textures[2] && var->textures[3])
+		if (var->textures[0] && var->textures[1] && var->textures[2]
+			&& var->textures[3])
 		{
-			Determine_texture(var, &texnum);
-			calculate_wall_hit_pos_to_texture(var, &wallx, &texx, &texnum);
-			draw_texture_on_wall(var, &texnum, &texx, start, end, x);
+			determine_texture(var);
+			calculate_wall_hit_pos_to_texture(var, &wallx);
+			draw_texture_on_wall(var, start, end, x);
 		}
 	}
+}
+
+int	flood_fill(char **map, int x, int y, int rows)
+{
+	if (x < 0 || y < 0 || x >= rows || y >= (int)ft_strlen(map[x]))
+		return (1);
+	if (ft_is_space(map[x][y]))
+		return (1);
+	if (map[x][y] == '1' || map[x][y] == 'T')
+		return (0);
+	map[x][y] = 'T';
+	if (flood_fill(map, x + 1, y, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y, rows))
+		return (1);
+	if (flood_fill(map, x, y + 1, rows))
+		return (1);
+	if (flood_fill(map, x, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x - 1, y + 1, rows))
+		return (1);
+	if (flood_fill(map, x + 1, y - 1, rows))
+		return (1);
+	if (flood_fill(map, x + 1, y + 1, rows))
+		return (1);
+	return (0);
 }

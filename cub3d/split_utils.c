@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 14:12:56 by thdaib            #+#    #+#             */
+/*   Updated: 2025/10/04 14:16:26 by thdaib           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./cub3d.h"
 
 void	ft_free_split1(char **split)
@@ -12,7 +24,8 @@ void	ft_free_split1(char **split)
 	}
 	free(split);
 }
-int ft_split_len(char **split)
+
+int	ft_split_len(char **split)
 {
 	int	i;
 
@@ -41,34 +54,39 @@ void	*ft_calloc1(size_t nitem, size_t size)
 	return ((void *)ptr);
 }
 
-char *ft_strjoin1(char *left, char *buff)
+void	join_stuff(char *left, char *buff, char *temp)
 {
-    int i;
-	int j;
+	int	i;
+	int	j;
 
-    char *temp;
+	i = -1;
+	while (left[++i])
+		temp[i] = left[i];
+	j = -1;
+	while (buff[++j])
+		temp[i++] = buff[j];
+	temp[i] = '\0';
+}
 
-    if (!left && !buff)
-        return (NULL);
-    if (!left)
+char	*ft_strjoin1(char *left, char *buff)
+{
+	char	*temp;
+
+	if (!left && !buff)
+		return (NULL);
+	if (!left)
 	{
-        left = ft_calloc1(1, sizeof(char));
-		if(!left)
-			return NULL;
+		left = ft_calloc1(1, sizeof(char));
+		if (!left)
+			return (NULL);
 	}
 	temp = malloc(sizeof(char) * (ft_strlen(left) + ft_strlen(buff) + 1));
 	if (!temp)
 	{
 		free(left);
-        return (NULL);
+		return (NULL);
 	}
-    i = -1;
-    while (left[++i])
-        temp[i] = left[i];
-    j = -1;
-    while (buff[++j])
-        temp[i++] = buff[j];
-    temp[i] = '\0';
-    free(left);
-    return temp;
+	join_stuff(left, buff, temp);
+	free(left);
+	return (temp);
 }

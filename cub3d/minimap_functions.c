@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   minimap_functions.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 20:22:37 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 14:59:03 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 
-void put_block(t_data *var, int x, int y, int size, uint32_t color)
+void	put_block(t_data *var, int x, int y, int size)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (i < size)
@@ -24,38 +24,47 @@ void put_block(t_data *var, int x, int y, int size, uint32_t color)
 		while (j < size)
 		{
 			if (j + x >= 0 && j + x < 340 && i + y >= 0 && i + y < 180)
-				mlx_put_pixel(var->m_map, j + x, i + y, color);
+				mlx_put_pixel(var->m_map, j + x, i + y, var->mm_block_color);
 			j++;
 		}
 		i++;
 	}
 }
 
-void draw_mm_blocks(t_data *var, int i, int j)
+void	draw_mm_blocks(t_data *var, int i, int j)
 {
-	int player_size;
-	int player_x;
-	int player_y;
+	int	player_size;
+	int	player_x;
+	int	player_y;
 
 	if (var->map[i][j] == '1')
-		put_block(var, j * var->block_size, i * var->block_size, var->block_size, 0x000000FF);
+	{
+		var->mm_block_color = 0x000000FF;
+		put_block(var, j * var->block_size, i * var->block_size,
+			var->block_size);
+	}
 	else if (var->map[i][j] == '0' || ft_strchr("NSEW", var->map[i][j]))
-		put_block(var, j * var->block_size, i * var->block_size, var->block_size, 0xB0B0B0FF);
+	{
+		var->mm_block_color = 0xA0B0B0FF;
+		put_block(var, j * var->block_size, i * var->block_size,
+			var->block_size);
+	}
 	if (j == (int)var->player_pos.x && i == (int)var->player_pos.y)
 	{
+		var->mm_block_color = 0xFFFFFFFF;
 		player_size = var->block_size * 0.4;
 		player_x = (int)(var->player_pos.x * var->block_size - player_size / 2);
 		player_y = (int)(var->player_pos.y * var->block_size - player_size / 2);
-		put_block(var, player_x, player_y, player_size, 0xFFFFFFFF);
+		put_block(var, player_x, player_y, player_size);
 	}
 }
 
-void put_mini_map(t_data *var)
+void	put_mini_map(t_data *var)
 {
-	int i;
-	int j;
-	int block_size_w;
-	int block_size_h;
+	int	i;
+	int	j;
+	int	block_size_w;
+	int	block_size_h;
 
 	i = 0;
 	block_size_w = 340 / var->map_cols;

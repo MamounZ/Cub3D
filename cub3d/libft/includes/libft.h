@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 10:57:42 by mazaid            #+#    #+#             */
-/*   Updated: 2025/06/05 18:00:43 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 15:06:39 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef struct s_list
 }			t_list;
 
 void	*ft_memset(void *s, int c, size_t n);
-void	skip_spaces(char *str,int *i);
+void	skip_spaces(char *str, int *i);
 void	*ft_memchr(const void *s, int c, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
 void	*ft_memmove(void *dest, const void *src, size_t n);

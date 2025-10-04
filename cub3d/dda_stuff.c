@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   dda_stuff.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 20:44:06 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 15:01:05 by thdaib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 
-void dda_init(t_data *var, int x)
+void	dda_init(t_data *var, int x)
 {
 	var->hit = 0;
 	var->camerax = 2 * x / (double)WIDTH - 1;
@@ -23,30 +23,36 @@ void dda_init(t_data *var, int x)
 	var->delta_dist.x = fabs(1 / var->raydir.x);
 	var->delta_dist.y = fabs(1 / var->raydir.y);
 }
-void dda_init_2(t_data *var)
+
+void	dda_init_2(t_data *var)
 {
 	if (var->raydir.x < 0)
 	{
 		var->step.x = -1;
-		var->side_dist.x = (var->player_pos.x - var->player_pos_box.x) * var->delta_dist.x;
+		var->side_dist.x = (var->player_pos.x - var->player_pos_box.x)
+			* var->delta_dist.x;
 	}
 	else
 	{
 		var->step.x = 1;
-		var->side_dist.x = (var->player_pos_box.x + 1.0 - var->player_pos.x) * var->delta_dist.x;
+		var->side_dist.x = (var->player_pos_box.x + 1.0 - var->player_pos.x)
+			* var->delta_dist.x;
 	}
 	if (var->raydir.y < 0)
 	{
 		var->step.y = -1;
-		var->side_dist.y = (var->player_pos.y - var->player_pos_box.y) * var->delta_dist.y;
+		var->side_dist.y = (var->player_pos.y - var->player_pos_box.y)
+			* var->delta_dist.y;
 	}
 	else
 	{
 		var->step.y = 1;
-		var->side_dist.y = (var->player_pos_box.y + 1.0 - var->player_pos.y) * var->delta_dist.y;
+		var->side_dist.y = (var->player_pos_box.y + 1.0 - var->player_pos.y)
+			* var->delta_dist.y;
 	}
 }
-void dda_loop(t_data *var)
+
+void	dda_loop(t_data *var)
 {
 	while (var->hit == 0)
 	{
@@ -62,36 +68,38 @@ void dda_loop(t_data *var)
 			var->player_pos_box.y += var->step.y;
 			var->side = 1;
 		}
-		if (var->player_pos_box.y >= 0 && var->player_pos_box.y < var->map_rows &&
-			var->player_pos_box.x >= 0 && var->player_pos_box.x < var->map_cols &&
-			var->map[var->player_pos_box.y][var->player_pos_box.x] == '1')
+		if (var->player_pos_box.y >= 0 && var->player_pos_box.y < var->map_rows
+			&& var->player_pos_box.x >= 0 && var->player_pos_box.x
+			< var->map_cols
+			&& var->map[var->player_pos_box.y][var->player_pos_box.x] == '1')
 			var->hit = 1;
 	}
 }
-void get_wall_height(t_data *var, int *wallstart, int *wallend)
+
+void	get_wall_height(t_data *var, int *wallstart, int *wallend)
 {
 	if (var->side == 0)
 		var->perpwalldist = var->side_dist.x - var->delta_dist.x;
 	else
 		var->perpwalldist = var->side_dist.y - var->delta_dist.y;
 	if (var->perpwalldist == 0)
-		var->lineHeight = (int)(HEIGHT / 0.000001);
+		var->lineheight = (int)(HEIGHT / 0.000001);
 	else
-		var->lineHeight = (int)(HEIGHT / var->perpwalldist);
-	*wallstart = -var->lineHeight / 2 + HEIGHT / 2;
-	*wallend = var->lineHeight / 2 + HEIGHT / 2;
+		var->lineheight = (int)(HEIGHT / var->perpwalldist);
+	*wallstart = -var->lineheight / 2 + HEIGHT / 2;
+	*wallend = var->lineheight / 2 + HEIGHT / 2;
 }
 
-void ray_caster(void *arg)
+void	ray_caster(void *arg)
 {
-	t_data *var;
-	int x;
-	int wallstart;
-	int wallend;
+	t_data	*var;
+	int		x;
+	int		wallstart;
+	int		wallend;
 
 	var = (t_data *)arg;
 	if (!var->needs_redraw)
-		return;
+		return ;
 	var->needs_redraw = 0;
 	x = 0;
 	while (x < WIDTH)

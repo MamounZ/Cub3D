@@ -6,7 +6,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 MLXFLAGS = -ldl -lglfw -pthread -lm
 NAME = cub3D
-SRCS = main.c list_helpers.c gnl_utils.c split_utils.c validations.c validate_f_c.c map_validation.c mlx_functions.c minimap_functions.c hooks.c movment.c raycasting_init.c texture_stuff.c dda_stuff.c general_utils.c
+SRCS = main.c list_helpers.c gnl_utils.c split_utils.c validations.c validate_f_c.c map_validation.c mlx_functions.c minimap_functions.c hooks.c movment.c raycasting_init.c texture_stuff.c dda_stuff.c general_utils.c free_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

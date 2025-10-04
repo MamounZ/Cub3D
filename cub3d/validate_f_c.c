@@ -12,12 +12,12 @@
 
 #include "./cub3d.h"
 
-int ft_is_number(char *str)
+int	ft_is_number(char *str)
 {
-	int i;
-	int is_number;
-	char *trimed;
-	int posetive;
+	int		i;
+	int		is_number;
+	char	*trimed;
+	int		posetive;
 
 	posetive = 0;
 	is_number = 0;
@@ -27,7 +27,7 @@ int ft_is_number(char *str)
 	if (trimed[0] == '\0')
 	{
 		free(trimed);
-		return 0;
+		return (0);
 	}
 	i = 0;
 	while (trimed[posetive] == '+')
@@ -40,32 +40,7 @@ int ft_is_number(char *str)
 	return (is_number);
 }
 
-// int ft_is_number(char *str)
-// {
-// 	int i;
-// 	int	is_number;
-
-// 	i = 0;
-// 	is_number = 0;
-// 	char *trimed = ft_strtrim(str," \t\n\v\f\r");
-// 	if (!trimed)
-// 		return (0);
-// 	if (trimed[0] == '\0')
-//     {
-//         free(trimed);
-//         return 0;
-//     }
-// 	i = 0;
-//     while (ft_isdigit(trimed[i]))
-// 		i++;
-// 	if (trimed[i] == '\0' && i <= 3)
-// 		is_number = 1;
-//     free(trimed);
-//     return (is_number);
-
-// }
-
-int store_rgb_value(t_data *var, char *id, int index, int value)
+int	store_rgb_value(t_data *var, char *id, int index, int value)
 {
 	if (value < 0 || value > 255)
 		return (0);
@@ -76,11 +51,11 @@ int store_rgb_value(t_data *var, char *id, int index, int value)
 	return (1);
 }
 
-int fill_rgb_values(t_data *var, char **rgb, char *id)
+int	fill_rgb_values(t_data *var, char **rgb, char *id)
 {
-	int i;
-	int value;
-	int split_len;
+	int	i;
+	int	value;
+	int	split_len;
 
 	split_len = ft_split_len(rgb);
 	i = 0;
@@ -97,12 +72,12 @@ int fill_rgb_values(t_data *var, char **rgb, char *id)
 	return (i);
 }
 
-int validate_f_c(t_data *var, char *value, char *id)
+int	validate_f_c(t_data *var, char *value, char *id)
 {
-	char **rgb;
-	int count;
-	int i;
-	int commas_count;
+	char	**rgb;
+	int		count;
+	int		i;
+	int		commas_count;
 
 	i = 0;
 	commas_count = 0;

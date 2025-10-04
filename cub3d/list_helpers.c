@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   list_helpers.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/04 13:42:18 by thdaib            #+#    #+#             */
+/*   Updated: 2025/10/04 13:42:28 by thdaib           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./cub3d.h"
 
-void assign_configs(char *configs[6])
+void	assign_configs(char *configs[6])
 {
 	configs[0] = "NO";
 	configs[1] = "SO";
@@ -9,61 +21,62 @@ void assign_configs(char *configs[6])
 	configs[4] = "F";
 	configs[5] = "C";
 }
+
 t_list	*create_configs_list(t_list **head)
 {
-
-	int	counter;
-	char *configs[6];
-	t_list *newnode;
-	char *value;
+	int		counter;
+	char	*configs[6];
+	t_list	*newnode;
+	char	*value;
 
 	counter = 0;
 	assign_configs(configs);
 	while (counter < 6)
 	{
 		value = ft_strdup(configs[counter]);
-		if(!value)
+		if (!value)
 			return (NULL);
 		newnode = ft_lstnew(value);
-		if(!newnode)
+		if (!newnode)
 		{
-			ft_lstclear(head,free);
+			ft_lstclear(head, free);
 			free(value);
 			return (NULL);
 		}
-		ft_lstadd_back(head,newnode);
+		ft_lstadd_back(head, newnode);
 		counter++;
 	}
-	return(*head);
+	return (*head);
 }
-int remove_id_from_list(t_list **head, char *value)
-{
-	t_list *temp;
-	t_list *my_prev_node;
-	temp = *head;
 
+int	remove_id_from_list(t_list **head, char *value)
+{
+	t_list	*temp;
+	t_list	*my_prev_node;
+
+	temp = *head;
 	my_prev_node = NULL;
-	while (temp && ft_strcmp(temp->content ,value) != 0)
+	while (temp && ft_strcmp(temp->content, value) != 0)
 	{
 		my_prev_node = temp;
 		temp = temp->next;
 	}
 	if (temp)
 	{
-		if(my_prev_node)
+		if (my_prev_node)
 			my_prev_node->next = temp->next;
 		else
 			*head = temp->next;
-		ft_lstdelone(temp,free);
+		ft_lstdelone(temp, free);
 		return (0);
 	}
-	return(1);//node not found
+	return (1);
 }
 
-char *copy_identifire(char *str)
+char	*copy_identifire(char *str)
 {
-	int	i;
-	char *value;
+	int		i;
+	char	*value;
 
 	value = malloc(ft_len_untill_space(str) + 1);
 	if (!value)
