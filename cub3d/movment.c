@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 20:29:55 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/03 20:30:03 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void normalize(t_dpoint *vector)
 	}
 }
 
-int is_position_safe(t_data *game_data, double x, double y, double buffer)
+int is_position_safe(t_data *var, double x, double y, double buffer)
 {
 	int min_x;
 	int max_x;
@@ -47,38 +47,38 @@ int is_position_safe(t_data *game_data, double x, double y, double buffer)
 	{
 		for (int check_x = min_x; check_x <= max_x; check_x++)
 		{
-			if (check_x < 0 || check_x >= game_data->map_cols ||
-				check_y < 0 || check_y >= game_data->map_rows)
+			if (check_x < 0 || check_x >= var->map_cols ||
+				check_y < 0 || check_y >= var->map_rows)
 				return (0);
-			if (game_data->map[check_y][check_x] == '1')
+			if (var->map[check_y][check_x] == '1')
 				return (0);
 		}
 	}
 	return (1);
 }
 
-void move_player_with_sliding(t_data *game_data, double buffer)
+void move_player_with_sliding(t_data *var, double buffer)
 {
 	double next_x;
 	double next_y;
 	int can_move_x;
 	int can_move_y;
 
-	next_x = game_data->player_pos.x + game_data->move.x;
-	next_y = game_data->player_pos.y + game_data->move.y;
-	can_move_x = is_position_safe(game_data, next_x, game_data->player_pos.y, buffer);
-	can_move_y = is_position_safe(game_data, game_data->player_pos.x, next_y, buffer);
+	next_x = var->player_pos.x + var->move.x;
+	next_y = var->player_pos.y + var->move.y;
+	can_move_x = is_position_safe(var, next_x, var->player_pos.y, buffer);
+	can_move_y = is_position_safe(var, var->player_pos.x, next_y, buffer);
 	if (can_move_x && can_move_y)
 	{
-		game_data->player_pos.x = next_x;
-		game_data->player_pos.y = next_y;
+		var->player_pos.x = next_x;
+		var->player_pos.y = next_y;
 	}
 	else if (can_move_x)
 	{
-		game_data->player_pos.x = next_x;
+		var->player_pos.x = next_x;
 	}
 	else if (can_move_y)
 	{
-		game_data->player_pos.y = next_y;
+		var->player_pos.y = next_y;
 	}
 }

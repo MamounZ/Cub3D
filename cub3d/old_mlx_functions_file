@@ -1,6 +1,6 @@
 // mlx_image_t *image;
 
-// void put_block(t_data *game_data, int x, int y, int size, uint32_t color)
+// void put_block(t_data *var, int x, int y, int size, uint32_t color)
 // {
 // 	int i;
 // 	int j;
@@ -12,38 +12,38 @@
 // 		while (j < size)
 // 		{
 // 			if (j + x >= 0 && j + x < 340 && i + y >= 0 && i + y < 180)
-// 				mlx_put_pixel(game_data->m_map, j + x, i + y, color);
+// 				mlx_put_pixel(var->m_map, j + x, i + y, color);
 // 			j++;
 // 		}
 // 		i++;
 // 	}
 // }
-// void put_mini_map(t_data *game_data)
+// void put_mini_map(t_data *var)
 // {
 // 	int i;
 // 	int j;
 // 	int player_size;
 // 	int offset;
 
-// 	if (game_data->map_rows < game_data->map_cols)
-// 		game_data->block_size = 340 / game_data->map_cols;
+// 	if (var->map_rows < var->map_cols)
+// 		var->block_size = 340 / var->map_cols;
 // 	else
-// 		game_data->block_size = 340 / game_data->map_rows;
+// 		var->block_size = 340 / var->map_rows;
 // 	i = 0;
-// 	while (i < game_data->map_rows)
+// 	while (i < var->map_rows)
 // 	{
 // 		j = 0;
-// 		while (game_data->map[i][j])
+// 		while (var->map[i][j])
 // 		{
-// 			if (game_data->map[i][j] == '1')
-// 				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x0F3F6FFF);
-// 			else if (game_data->map[i][j] == '0')
-// 				put_block(game_data, j * game_data->block_size, i * game_data->block_size, game_data->block_size, 0x669999FF);
-// 			else if (j == (int)game_data->player_pos.x && i == (int)game_data->player_pos.y)
+// 			if (var->map[i][j] == '1')
+// 				put_block(var, j * var->block_size, i * var->block_size, var->block_size, 0x0F3F6FFF);
+// 			else if (var->map[i][j] == '0')
+// 				put_block(var, j * var->block_size, i * var->block_size, var->block_size, 0x669999FF);
+// 			else if (j == (int)var->player_pos.x && i == (int)var->player_pos.y)
 // 			{
-// 				player_size = game_data->block_size * 0.2;
-// 				offset = (game_data->block_size - player_size) / 2;
-// 				put_block(game_data, j * game_data->block_size + offset, i * game_data->block_size + offset, player_size, 0xFFFFFFFF);
+// 				player_size = var->block_size * 0.2;
+// 				offset = (var->block_size - player_size) / 2;
+// 				put_block(var, j * var->block_size + offset, i * var->block_size + offset, player_size, 0xFFFFFFFF);
 // 			}
 // 			j++;
 // 		}
@@ -53,130 +53,130 @@
 
 // // void ft_hook(void *arg)
 // // {
-// // 	t_data *game_data;
-// // 	game_data = (t_data *)arg;
-// // 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
-// // 		mlx_close_window(game_data->mlx);
-// // 	if (game_data->player_pos.y >= 0 && game_data->player_pos.x >= 0)
+// // 	t_data *var;
+// // 	var = (t_data *)arg;
+// // 	if (mlx_is_key_down(var->mlx, MLX_KEY_ESCAPE))
+// // 		mlx_close_window(var->mlx);
+// // 	if (var->player_pos.y >= 0 && var->player_pos.x >= 0)
 // // 	{
-// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_UP))
+// // 		if (mlx_is_key_down(var->mlx, MLX_KEY_UP))
 // // 		{
-// // 			double ny = game_data->player_pos.y - 0.1;
-// // 			double nx = game_data->player_pos.x;
+// // 			double ny = var->player_pos.y - 0.1;
+// // 			double nx = var->player_pos.x;
 // // 			int cell_y = (int)(ny - PLAYER_RADIUS);
 // // 			int cell_x = (int)(nx - PLAYER_RADIUS);
-// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			if (cell_y >= 0 && cell_y < var->map_rows && cell_x >= 0 && cell_x < var->map_cols && var->map[cell_y][cell_x] != '1')
 // // 			{
-// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
-// // 				game_data->map[cell_y][cell_x] = 'S';
-// // 				game_data->player_pos.y = ny;
+// // 				var->map[(int)var->player_pos.y][(int)var->player_pos.x] = '0';
+// // 				var->map[cell_y][cell_x] = 'S';
+// // 				var->player_pos.y = ny;
 // // 			}
 // // 		}
-// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_DOWN))
+// // 		if (mlx_is_key_down(var->mlx, MLX_KEY_DOWN))
 // // 		{
-// // 			double ny = game_data->player_pos.y + 0.1;
-// // 			double nx = game_data->player_pos.x;
+// // 			double ny = var->player_pos.y + 0.1;
+// // 			double nx = var->player_pos.x;
 // // 			int cell_y = (int)(ny - PLAYER_RADIUS);
 // // 			int cell_x = (int)(nx - PLAYER_RADIUS);
-// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			if (cell_y >= 0 && cell_y < var->map_rows && cell_x >= 0 && cell_x < var->map_cols && var->map[cell_y][cell_x] != '1')
 // // 			{
-// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
-// // 				game_data->map[cell_y][cell_x] = 'S';
-// // 				game_data->player_pos.y = ny;
+// // 				var->map[(int)var->player_pos.y][(int)var->player_pos.x] = '0';
+// // 				var->map[cell_y][cell_x] = 'S';
+// // 				var->player_pos.y = ny;
 // // 			}
 // // 		}
-// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
+// // 		if (mlx_is_key_down(var->mlx, MLX_KEY_LEFT))
 // // 		{
-// // 			double ny = game_data->player_pos.y;
-// // 			double nx = game_data->player_pos.x - 0.1;
+// // 			double ny = var->player_pos.y;
+// // 			double nx = var->player_pos.x - 0.1;
 // // 			int cell_y = (int)(ny - PLAYER_RADIUS);
 // // 			int cell_x = (int)(nx - PLAYER_RADIUS);
-// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			if (cell_y >= 0 && cell_y < var->map_rows && cell_x >= 0 && cell_x < var->map_cols && var->map[cell_y][cell_x] != '1')
 // // 			{
-// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
-// // 				game_data->map[cell_y][cell_x] = 'S';
-// // 				game_data->player_pos.y = ny;
+// // 				var->map[(int)var->player_pos.y][(int)var->player_pos.x] = '0';
+// // 				var->map[cell_y][cell_x] = 'S';
+// // 				var->player_pos.y = ny;
 // // 			}
 // // 		}
-// // 		if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
+// // 		if (mlx_is_key_down(var->mlx, MLX_KEY_RIGHT))
 // // 		{
-// // 			double ny = game_data->player_pos.y;
-// // 			double nx = game_data->player_pos.x + 0.1;
+// // 			double ny = var->player_pos.y;
+// // 			double nx = var->player_pos.x + 0.1;
 // // 			int cell_y = (int)(ny - PLAYER_RADIUS);
 // // 			int cell_x = (int)(nx - PLAYER_RADIUS);
-// // 			if (cell_y >= 0 && cell_y < game_data->map_rows && cell_x >= 0 && cell_x < game_data->map_cols && game_data->map[cell_y][cell_x] != '1')
+// // 			if (cell_y >= 0 && cell_y < var->map_rows && cell_x >= 0 && cell_x < var->map_cols && var->map[cell_y][cell_x] != '1')
 // // 			{
-// // 				game_data->map[(int)game_data->player_pos.y][(int)game_data->player_pos.x] = '0';
-// // 				game_data->map[cell_y][cell_x] = 'S';
-// // 				game_data->player_pos.y = ny;
+// // 				var->map[(int)var->player_pos.y][(int)var->player_pos.x] = '0';
+// // 				var->map[cell_y][cell_x] = 'S';
+// // 				var->player_pos.y = ny;
 // // 			}
 // // 		}
 // // 	}
-// // 	put_mini_map(game_data);
+// // 	put_mini_map(var);
 // // }
 
 // void ft_hook(void *arg)
 // {
-// 	t_data *game_data = (t_data *)arg;
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_ESCAPE))
-// 		mlx_close_window(game_data->mlx);
+// 	t_data *var = (t_data *)arg;
+// 	if (mlx_is_key_down(var->mlx, MLX_KEY_ESCAPE))
+// 		mlx_close_window(var->mlx);
 
 // 	double moveSpeed = 0.1;
 // 	double rotSpeed = 0.08;
 
 // 	// Move forward
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_UP))
+// 	if (mlx_is_key_down(var->mlx, MLX_KEY_UP))
 // 	{
-// 		double next_x = game_data->player_pos.x + game_data->player_dir.x * moveSpeed;
-// 		double next_y = game_data->player_pos.y + game_data->player_dir.y * moveSpeed;
-// 		if (next_x >= 0 && next_x < game_data->map_cols && next_y >= 0 && next_y < game_data->map_rows &&
-// 			game_data->map[(int)next_y][(int)next_x] != '1')
+// 		double next_x = var->player_pos.x + var->player_dir.x * moveSpeed;
+// 		double next_y = var->player_pos.y + var->player_dir.y * moveSpeed;
+// 		if (next_x >= 0 && next_x < var->map_cols && next_y >= 0 && next_y < var->map_rows &&
+// 			var->map[(int)next_y][(int)next_x] != '1')
 // 		{
-// 			game_data->player_pos.x = next_x;
-// 			game_data->player_pos.y = next_y;
+// 			var->player_pos.x = next_x;
+// 			var->player_pos.y = next_y;
 // 		}
 // 	}
 // 	// Move backward
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_DOWN))
+// 	if (mlx_is_key_down(var->mlx, MLX_KEY_DOWN))
 // 	{
-// 		double next_x = game_data->player_pos.x - game_data->player_dir.x * moveSpeed;
-// 		double next_y = game_data->player_pos.y - game_data->player_dir.y * moveSpeed;
-// 		if (next_x >= 0 && next_x < game_data->map_cols && next_y >= 0 && next_y < game_data->map_rows &&
-// 			game_data->map[(int)next_y][(int)next_x] != '1')
+// 		double next_x = var->player_pos.x - var->player_dir.x * moveSpeed;
+// 		double next_y = var->player_pos.y - var->player_dir.y * moveSpeed;
+// 		if (next_x >= 0 && next_x < var->map_cols && next_y >= 0 && next_y < var->map_rows &&
+// 			var->map[(int)next_y][(int)next_x] != '1')
 // 		{
-// 			game_data->player_pos.x = next_x;
-// 			game_data->player_pos.y = next_y;
+// 			var->player_pos.x = next_x;
+// 			var->player_pos.y = next_y;
 // 		}
 // 	}
 // 	// Rotate right
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_RIGHT))
+// 	if (mlx_is_key_down(var->mlx, MLX_KEY_RIGHT))
 // 	{
-// 		double oldDirX = game_data->player_dir.x;
-// 		game_data->player_dir.x = game_data->player_dir.x * cos(-rotSpeed) - game_data->player_dir.y * sin(-rotSpeed);
-// 		game_data->player_dir.y = oldDirX * sin(-rotSpeed) + game_data->player_dir.y * cos(-rotSpeed);
-// 		double oldPlaneX = game_data->plan.x;
-// 		game_data->plan.x = game_data->plan.x * cos(-rotSpeed) - game_data->plan.y * sin(-rotSpeed);
-// 		game_data->plan.y = oldPlaneX * sin(-rotSpeed) + game_data->plan.y * cos(-rotSpeed);
+// 		double oldDirX = var->player_dir.x;
+// 		var->player_dir.x = var->player_dir.x * cos(-rotSpeed) - var->player_dir.y * sin(-rotSpeed);
+// 		var->player_dir.y = oldDirX * sin(-rotSpeed) + var->player_dir.y * cos(-rotSpeed);
+// 		double oldPlaneX = var->plan.x;
+// 		var->plan.x = var->plan.x * cos(-rotSpeed) - var->plan.y * sin(-rotSpeed);
+// 		var->plan.y = oldPlaneX * sin(-rotSpeed) + var->plan.y * cos(-rotSpeed);
 // 	}
 // 	// Rotate left
-// 	if (mlx_is_key_down(game_data->mlx, MLX_KEY_LEFT))
+// 	if (mlx_is_key_down(var->mlx, MLX_KEY_LEFT))
 // 	{
-// 		double oldDirX = game_data->player_dir.x;
-// 		game_data->player_dir.x = game_data->player_dir.x * cos(rotSpeed) - game_data->player_dir.y * sin(rotSpeed);
-// 		game_data->player_dir.y = oldDirX * sin(rotSpeed) + game_data->player_dir.y * cos(rotSpeed);
-// 		double oldPlaneX = game_data->plan.x;
-// 		game_data->plan.x = game_data->plan.x * cos(rotSpeed) - game_data->plan.y * sin(rotSpeed);
-// 		game_data->plan.y = oldPlaneX * sin(rotSpeed) + game_data->plan.y * cos(rotSpeed);
+// 		double oldDirX = var->player_dir.x;
+// 		var->player_dir.x = var->player_dir.x * cos(rotSpeed) - var->player_dir.y * sin(rotSpeed);
+// 		var->player_dir.y = oldDirX * sin(rotSpeed) + var->player_dir.y * cos(rotSpeed);
+// 		double oldPlaneX = var->plan.x;
+// 		var->plan.x = var->plan.x * cos(rotSpeed) - var->plan.y * sin(rotSpeed);
+// 		var->plan.y = oldPlaneX * sin(rotSpeed) + var->plan.y * cos(rotSpeed);
 // 	}
 
-// 	put_mini_map(game_data);
+// 	put_mini_map(var);
 // }
 
 // void ft_randomize(void *arg)
 // {
-// 	t_data *game_data;
+// 	t_data *var;
 
-// 	game_data = (t_data *)arg;
+// 	var = (t_data *)arg;
 // 	for (uint32_t i = 0; i < 11; ++i)
 // 	{
 // 		for (uint32_t y = 0; y < 11; ++y)
@@ -196,38 +196,38 @@
 // 	vector->y = tmp_x * sin(theta) + vector->y * cos(theta);
 // }
 
-// void dir_init(t_data *game_data, double theta)
+// void dir_init(t_data *var, double theta)
 // {
-// 	game_data->player_dir.x = cos(theta);
-// 	game_data->player_dir.y = sin(theta);
+// 	var->player_dir.x = cos(theta);
+// 	var->player_dir.y = sin(theta);
 // }
-// void plan_init(t_data *game_data, double x, double y)
+// void plan_init(t_data *var, double x, double y)
 // {
-// 	game_data->plan.x = x;
-// 	game_data->plan.y = y;
+// 	var->plan.x = x;
+// 	var->plan.y = y;
 // }
 
-// void r_c_init(t_data *game_data)
+// void r_c_init(t_data *var)
 // {
-// 	if (game_data->starting_dir == 'N')
+// 	if (var->starting_dir == 'N')
 // 	{
-// 		dir_init(game_data, 3 * PI / 2);
-// 		plan_init(game_data, 0.66, 0);
+// 		dir_init(var, 3 * PI / 2);
+// 		plan_init(var, 0.66, 0);
 // 	}
-// 	if (game_data->starting_dir == 'E')
+// 	if (var->starting_dir == 'E')
 // 	{
-// 		dir_init(game_data, 0);
-// 		plan_init(game_data, 0, 0.66);
+// 		dir_init(var, 0);
+// 		plan_init(var, 0, 0.66);
 // 	}
-// 	if (game_data->starting_dir == 'S')
+// 	if (var->starting_dir == 'S')
 // 	{
-// 		dir_init(game_data, PI / 2);
-// 		plan_init(game_data, -0.66, 0);
+// 		dir_init(var, PI / 2);
+// 		plan_init(var, -0.66, 0);
 // 	}
-// 	if (game_data->starting_dir == 'W')
+// 	if (var->starting_dir == 'W')
 // 	{
-// 		dir_init(game_data, PI);
-// 		plan_init(game_data, 0, -0.66);
+// 		dir_init(var, PI);
+// 		plan_init(var, 0, -0.66);
 // 	}
 // }
 
@@ -246,101 +246,101 @@
 
 // void ray_caster(void *arg)
 // {
-// 	t_data *game_data = (t_data *)arg;
+// 	t_data *var = (t_data *)arg;
 // 	int x;
 // 	uint32_t color = 0xAAAAAAFF;
 
-// 	// mlx_delete_image(game_data->mlx, game_data->world);
-// 	game_data->world = mlx_new_image(game_data->mlx, WIDTH, HEIGHT);
+// 	// mlx_delete_image(var->mlx, var->world);
+// 	var->world = mlx_new_image(var->mlx, WIDTH, HEIGHT);
 // 	x = 0;
 // 	while (x < WIDTH)
 // 	{
-// 		game_data->hit = 0;
-// 		game_data->camerax = 2 * x / (double)WIDTH - 1;
-// 		game_data->raydir.x = game_data->player_dir.x + game_data->plan.x * game_data->camerax;
-// 		game_data->raydir.y = game_data->player_dir.y + game_data->plan.y * game_data->camerax;
-// 		game_data->player_pos_box.x = (int)game_data->player_pos.x;
-// 		game_data->player_pos_box.y = (int)game_data->player_pos.y;
-// 		game_data->delta_dist.x = fabs(1 / game_data->raydir.x);
-// 		game_data->delta_dist.y = fabs(1 / game_data->raydir.y);
+// 		var->hit = 0;
+// 		var->camerax = 2 * x / (double)WIDTH - 1;
+// 		var->raydir.x = var->player_dir.x + var->plan.x * var->camerax;
+// 		var->raydir.y = var->player_dir.y + var->plan.y * var->camerax;
+// 		var->player_pos_box.x = (int)var->player_pos.x;
+// 		var->player_pos_box.y = (int)var->player_pos.y;
+// 		var->delta_dist.x = fabs(1 / var->raydir.x);
+// 		var->delta_dist.y = fabs(1 / var->raydir.y);
 
-// 		if (game_data->raydir.x < 0)
+// 		if (var->raydir.x < 0)
 // 		{
-// 			game_data->step.x = -1;
-// 			game_data->side_dist.x = (game_data->player_pos.x - game_data->player_pos_box.x) * game_data->delta_dist.x;
+// 			var->step.x = -1;
+// 			var->side_dist.x = (var->player_pos.x - var->player_pos_box.x) * var->delta_dist.x;
 // 		}
 // 		else
 // 		{
-// 			game_data->step.x = 1;
-// 			game_data->side_dist.x = (game_data->player_pos_box.x + 1.0 - game_data->player_pos.x) * game_data->delta_dist.x;
+// 			var->step.x = 1;
+// 			var->side_dist.x = (var->player_pos_box.x + 1.0 - var->player_pos.x) * var->delta_dist.x;
 // 		}
-// 		if (game_data->raydir.y < 0)
+// 		if (var->raydir.y < 0)
 // 		{
-// 			game_data->step.y = -1;
-// 			game_data->side_dist.y = (game_data->player_pos.y - game_data->player_pos_box.y) * game_data->delta_dist.y;
+// 			var->step.y = -1;
+// 			var->side_dist.y = (var->player_pos.y - var->player_pos_box.y) * var->delta_dist.y;
 // 		}
 // 		else
 // 		{
-// 			game_data->step.y = 1;
-// 			game_data->side_dist.y = (game_data->player_pos_box.y + 1.0 - game_data->player_pos.y) * game_data->delta_dist.y;
+// 			var->step.y = 1;
+// 			var->side_dist.y = (var->player_pos_box.y + 1.0 - var->player_pos.y) * var->delta_dist.y;
 // 		}
 
-// 		while (game_data->hit == 0)
+// 		while (var->hit == 0)
 // 		{
 // 			// jump to next map square, either in x-direction, or in y-direction
-// 			if (game_data->side_dist.x < game_data->side_dist.y)
+// 			if (var->side_dist.x < var->side_dist.y)
 // 			{
-// 				game_data->side_dist.x += game_data->delta_dist.x;
-// 				game_data->player_pos_box.x += game_data->step.x;
-// 				game_data->side = 0;
+// 				var->side_dist.x += var->delta_dist.x;
+// 				var->player_pos_box.x += var->step.x;
+// 				var->side = 0;
 // 			}
 // 			else
 // 			{
-// 				game_data->side_dist.y += game_data->delta_dist.y;
-// 				game_data->player_pos_box.y += game_data->step.y;
-// 				game_data->side = 1;
+// 				var->side_dist.y += var->delta_dist.y;
+// 				var->player_pos_box.y += var->step.y;
+// 				var->side = 1;
 // 			}
 // 			// Check if ray has hit a wall
-// 			if (game_data->player_pos_box.y >= 0 && game_data->player_pos_box.y < game_data->map_rows &&
-// 				game_data->player_pos_box.x >= 0 && game_data->player_pos_box.x < game_data->map_cols &&
-// 				game_data->map[game_data->player_pos_box.y][game_data->player_pos_box.x] == '1')
-// 				game_data->hit = 1;
+// 			if (var->player_pos_box.y >= 0 && var->player_pos_box.y < var->map_rows &&
+// 				var->player_pos_box.x >= 0 && var->player_pos_box.x < var->map_cols &&
+// 				var->map[var->player_pos_box.y][var->player_pos_box.x] == '1')
+// 				var->hit = 1;
 // 		}
 
-// 		if (game_data->side == 0)
-// 			game_data->perpwalldist = (game_data->side_dist.x - game_data->delta_dist.x);
+// 		if (var->side == 0)
+// 			var->perpwalldist = (var->side_dist.x - var->delta_dist.x);
 // 		else
-// 			game_data->perpwalldist = (game_data->side_dist.y - game_data->delta_dist.y);
+// 			var->perpwalldist = (var->side_dist.y - var->delta_dist.y);
 
 // 		// Calculate height of line to draw on screen
-// 		game_data->lineHeight = (int)(HEIGHT / game_data->perpwalldist);
+// 		var->lineHeight = (int)(HEIGHT / var->perpwalldist);
 
 // 		// calculate lowest and highest pixel to fill in current stripe
-// 		int drawStart = -game_data->lineHeight / 2 + HEIGHT / 2;
+// 		int drawStart = -var->lineHeight / 2 + HEIGHT / 2;
 // 		if (drawStart < 0)
 // 			drawStart = 0;
-// 		int drawEnd = game_data->lineHeight / 2 + HEIGHT / 2;
+// 		int drawEnd = var->lineHeight / 2 + HEIGHT / 2;
 // 		if (drawEnd >= HEIGHT)
 // 			drawEnd = HEIGHT - 1;
-// 		draw_vertical_line(game_data->world, x, drawStart, drawEnd, color);
+// 		draw_vertical_line(var->world, x, drawStart, drawEnd, color);
 
 // 		x++;
 // 	}
 // }
 
-// void mlx_stuff(t_data *game_data)
+// void mlx_stuff(t_data *var)
 // {
 // 	// needs protection!!!!!!!!!!!!!!!
-// 	game_data->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
-// 	game_data->m_map = mlx_new_image(game_data->mlx, 340, 180);
-// 	put_mini_map(game_data);
-// 	mlx_image_to_window(game_data->mlx, game_data->m_map, 0, 0);
-// 	image = mlx_new_image(game_data->mlx, 11, 11);
-// 	mlx_image_to_window(game_data->mlx, image, 0, 0);
-// 	mlx_image_to_window(game_data->mlx, game_data->world, 0, 0);
-// 	// ray_caster(game_data);
-// 	mlx_loop_hook(game_data->mlx, ray_caster, game_data);
-// 	mlx_loop_hook(game_data->mlx, ft_hook, game_data);
-// 	mlx_loop(game_data->mlx);
-// 	mlx_terminate(game_data->mlx);
+// 	var->mlx = mlx_init(WIDTH, HEIGHT, "MLX42", true);
+// 	var->m_map = mlx_new_image(var->mlx, 340, 180);
+// 	put_mini_map(var);
+// 	mlx_image_to_window(var->mlx, var->m_map, 0, 0);
+// 	image = mlx_new_image(var->mlx, 11, 11);
+// 	mlx_image_to_window(var->mlx, image, 0, 0);
+// 	mlx_image_to_window(var->mlx, var->world, 0, 0);
+// 	// ray_caster(var);
+// 	mlx_loop_hook(var->mlx, ray_caster, var);
+// 	mlx_loop_hook(var->mlx, ft_hook, var);
+// 	mlx_loop(var->mlx);
+// 	mlx_terminate(var->mlx);
 // }

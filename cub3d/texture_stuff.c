@@ -6,7 +6,7 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 20:38:49 by mazaid            #+#    #+#             */
-/*   Updated: 2025/10/03 20:39:17 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,30 +24,30 @@ int rgb_to_int(int *rgb)
 	return ((rgb[0] << 24) | (rgb[1] << 16) | (rgb[2] << 8) | 0xFF);
 }
 
-void Determine_texture(t_data *game_data, int *texnum)
+void Determine_texture(t_data *var, int *texnum)
 {
-	if (game_data->side == 0 && game_data->raydir.x > 0)
+	if (var->side == 0 && var->raydir.x > 0)
 		*texnum = 2; // EA
-	else if (game_data->side == 0 && game_data->raydir.x <= 0)
+	else if (var->side == 0 && var->raydir.x <= 0)
 		*texnum = 3; // WE
-	else if (game_data->side == 1 && game_data->raydir.y > 0)
+	else if (var->side == 1 && var->raydir.y > 0)
 		*texnum = 1; // SO
-	else if (game_data->side == 1 && game_data->raydir.y <= 0)
+	else if (var->side == 1 && var->raydir.y <= 0)
 		*texnum = 0; // NO
 }
-void calculate_wall_hit_pos_to_texture(t_data *game_data, double *wallx, int *texx, int *texnum)
+void calculate_wall_hit_pos_to_texture(t_data *var, double *wallx, int *texx, int *texnum)
 {
-	if (game_data->side == 0)
-		*wallx = game_data->player_pos.y + game_data->perpwalldist * game_data->raydir.y;
+	if (var->side == 0)
+		*wallx = var->player_pos.y + var->perpwalldist * var->raydir.y;
 	else
-		*wallx = game_data->player_pos.x + game_data->perpwalldist * game_data->raydir.x;
+		*wallx = var->player_pos.x + var->perpwalldist * var->raydir.x;
 	*wallx -= floor(*wallx);
-	*texx = (int)(*wallx * (double)game_data->textures[*texnum]->width);
+	*texx = (int)(*wallx * (double)var->textures[*texnum]->width);
 	// merroring for west and north textures
-	if ((game_data->side == 0 && game_data->raydir.x <= 0) || (game_data->side == 1 && game_data->raydir.y >= 0))
-		*texx = game_data->textures[*texnum]->width - *texx - 1;
+	if ((var->side == 0 && var->raydir.x <= 0) || (var->side == 1 && var->raydir.y >= 0))
+		*texx = var->textures[*texnum]->width - *texx - 1;
 }
-void draw_texture_on_wall(t_data *game_data, int *texnum, int *texx, int start, int end, int x)
+void draw_texture_on_wall(t_data *var, int *texnum, int *texx, int start, int end, int x)
 {
 	double step;
 	double texpos;
@@ -55,17 +55,17 @@ void draw_texture_on_wall(t_data *game_data, int *texnum, int *texx, int start, 
 	int texy;
 	uint32_t color;
 
-	step = 1.0 * game_data->textures[*texnum]->height / game_data->lineHeight;
-	texpos = (start - HEIGHT / 2 + game_data->lineHeight / 2) * step;
+	step = 1.0 * var->textures[*texnum]->height / var->lineHeight;
+	texpos = (start - HEIGHT / 2 + var->lineHeight / 2) * step;
 	y = start;
 	while (y <= end)
 	{
-		texy = (int)texpos % game_data->textures[*texnum]->height;
+		texy = (int)texpos % var->textures[*texnum]->height;
 		if (texy < 0)
-			texy += game_data->textures[*texnum]->height;
+			texy += var->textures[*texnum]->height;
 		texpos += step;
-		color = get_texture_pixel(game_data->textures[*texnum], *texx, texy);
-		mlx_put_pixel(game_data->world, x, y, color);
+		color = get_texture_pixel(var->textures[*texnum], *texx, texy);
+		mlx_put_pixel(var->world, x, y, color);
 		y++;
 	}
 }

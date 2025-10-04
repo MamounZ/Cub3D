@@ -1,13 +1,13 @@
 #include "./cub3d.h"
 
-int validate_args(char *map_name,int argc)
+int validate_args(char *map_name, int argc)
 {
-	if (argc !=2)
+	if (argc != 2)
 	{
 		ft_printf("invalid args\n");
 		return (1);
 	}
-	if (ft_strlen(map_name) <5)
+	if (ft_strlen(map_name) < 5)
 	{
 		ft_printf("invalid map name\n");
 		return (1);
@@ -20,23 +20,23 @@ int validate_args(char *map_name,int argc)
 	return (0);
 }
 
-int validate_config(int fd ,t_data *game_data)
+int validate_config(int fd, t_data *var)
 {
-    t_list	*head;
+	t_list *head;
 
 	head = NULL;
 
-    head = create_configs_list(&head);
+	head = create_configs_list(&head);
 	if (!head)
 		return (1);
-	if (gnl_loop(fd ,game_data ,head))
+	if (gnl_loop(fd, var, head))
 		return (1);
 
 	return (0);
 }
-int handle_spaces( char *temp , char *value , int *i , int *j)
+int handle_spaces(char *temp, char *value, int *i, int *j)
 {
-	skip_spaces(temp ,i);
+	skip_spaces(temp, i);
 	if (temp[*i] != '\0' && temp[*i] != '/')
 	{
 		if (temp[*i] != '\0')
@@ -48,18 +48,18 @@ int handle_spaces( char *temp , char *value , int *i , int *j)
 	return (0);
 }
 
-int id_value_loop(char *temp , char *value , int i , int j)
+int id_value_loop(char *temp, char *value, int i, int j)
 {
 	while (temp[i])
 	{
 		if (temp[i] == '/')
 		{
 			value[j++] = temp[i++];
-			skip_spaces(temp ,&i);
+			skip_spaces(temp, &i);
 		}
 		else if (ft_is_space(temp[i]))
 		{
-			if (handle_spaces(temp , value , &i , &j))
+			if (handle_spaces(temp, value, &i, &j))
 				return (1);
 			if (temp[i] != '\0' && temp[i] != '/')
 				value[j++] = temp[i++];
@@ -70,11 +70,11 @@ int id_value_loop(char *temp , char *value , int i , int j)
 	value[j] = '\0';
 	return (0);
 }
-void skip_id_spaces(char *str,int *i ,char *id)
+void skip_id_spaces(char *str, int *i, char *id)
 {
-	skip_spaces(str ,i);
+	skip_spaces(str, i);
 	*i += ft_strlen(id);
-	skip_spaces(str ,i);
+	skip_spaces(str, i);
 }
 
 char *get_id(char *line, char *id)
@@ -124,27 +124,27 @@ char *get_id(char *line, char *id)
 // 	return (value);
 // }
 
-int save_configs(char *line , t_data *game_data , char * id)
+int save_configs(char *line, t_data *var, char *id)
 {
 	char *value;
 
-	value = get_id (line , id);
-	if(!value)
+	value = get_id(line, id);
+	if (!value)
 	{
-		free (id);
+		free(id);
 		return (1);
 	}
-	if (ft_strcmp(id , "NO") == 0)
-		game_data->tex_paths[0] =value;
-	else if (ft_strcmp(id , "SO") == 0)
-		game_data->tex_paths[1] =value;
-	else if (ft_strcmp(id , "EA") == 0)
-		game_data->tex_paths[2] =value;
-	else if (ft_strcmp(id , "WE") == 0)
-		game_data->tex_paths[3] =value;
-	else if (ft_strcmp(id , "C") == 0 || ft_strcmp(id , "F") == 0)
+	if (ft_strcmp(id, "NO") == 0)
+		var->tex_paths[0] = value;
+	else if (ft_strcmp(id, "SO") == 0)
+		var->tex_paths[1] = value;
+	else if (ft_strcmp(id, "EA") == 0)
+		var->tex_paths[2] = value;
+	else if (ft_strcmp(id, "WE") == 0)
+		var->tex_paths[3] = value;
+	else if (ft_strcmp(id, "C") == 0 || ft_strcmp(id, "F") == 0)
 	{
-		if(validate_f_c(game_data,value ,id) == 1)
+		if (validate_f_c(var, value, id) == 1)
 		{
 			free(id);
 			free(value);
@@ -154,19 +154,18 @@ int save_configs(char *line , t_data *game_data , char * id)
 	free(id);
 	return (0);
 }
-void check_for_player(char *dirictions,t_data *game_data,int i , int j)
+void check_for_player(char *dirictions, t_data *var, int i, int j)
 {
-	if (ft_strchr(dirictions,game_data->map[i][j]))
+	if (ft_strchr(dirictions, var->map[i][j]))
 	{
-		game_data->there_is_a_player++;
-		game_data->starting_dir = game_data->map[i][j];
-		game_data->player_pos.x = j + 0.5;
-		game_data->player_pos.y = i + 0.5;
+		var->there_is_a_player++;
+		var->starting_dir = var->map[i][j];
+		var->player_pos.x = j + 0.5;
+		var->player_pos.y = i + 0.5;
 	}
-
 }
 
-int validate_map_content_loop(t_data *game_data, char *valid_content, char *dirictions)
+int validate_map_content_loop(t_data *var, char *valid_content, char *dirictions)
 {
 	int i;
 	int j;
@@ -174,15 +173,15 @@ int validate_map_content_loop(t_data *game_data, char *valid_content, char *diri
 
 	longest_row = 0;
 	i = 0;
-	while (game_data->map[i])
+	while (var->map[i])
 	{
 		j = 0;
-		while (game_data->map[i][j])
+		while (var->map[i][j])
 		{
-			if (!ft_strchr(valid_content, game_data->map[i][j]) && (game_data->map[i][j] != ' '))
+			if (!ft_strchr(valid_content, var->map[i][j]) && (var->map[i][j] != ' '))
 				return (1);
-			check_for_player(dirictions, game_data, i, j);
-			if (game_data->there_is_a_player > 1)
+			check_for_player(dirictions, var, i, j);
+			if (var->there_is_a_player > 1)
 				return (1);
 			j++;
 		}
@@ -190,35 +189,34 @@ int validate_map_content_loop(t_data *game_data, char *valid_content, char *diri
 			longest_row = j;
 		i++;
 	}
-	game_data->map_rows = i;
-	game_data->map_cols = longest_row;
+	var->map_rows = i;
+	var->map_cols = longest_row;
 	return (0);
 }
 
-int validate_map_content (t_data *game_data)
+int validate_map_content(t_data *var)
 {
-    char	*valid_content;
-	char	*dirictions;
+	char *valid_content;
+	char *dirictions;
 
-    valid_content = "01NEWS";
+	valid_content = "01NEWS";
 	dirictions = valid_content + 2;
-	if (validate_map_content_loop (game_data ,valid_content ,dirictions))
+	if (validate_map_content_loop(var, valid_content, dirictions))
 		return (1);
-	if (game_data->there_is_a_player != 1)
-				return (1);
-    return (0);
+	if (var->there_is_a_player != 1)
+		return (1);
+	return (0);
 }
 
-
-int validate_map(int fd , t_data *game_data)
+int validate_map(int fd, t_data *var)
 {
-	//int	i;
+	// int	i;
 	int res;
 
-   res = get_map(fd,game_data);
-    if (res || !game_data->map || !game_data->map_copy)
-        return (1);
-    if (validate_map_content (game_data))
+	res = get_map(fd, var);
+	if (res || !var->map || !var->map_copy)
 		return (1);
-	return (flood_fill(game_data->map_copy, game_data->player_pos.y, game_data->player_pos.x, game_data->map_rows));
+	if (validate_map_content(var))
+		return (1);
+	return (flood_fill(var->map_copy, var->player_pos.y, var->player_pos.x, var->map_rows));
 }

@@ -6,14 +6,14 @@
 /*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/03 17:08:02 by mazaid           ###   ########.fr       */
+/*   Updated: 2025/10/04 12:16:39 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./cub3d.h"
 #include <stdlib.h>
 
-int check_paths(t_data *game_data)
+int check_paths(t_data *var)
 {
 	int fd;
 	int i;
@@ -21,25 +21,25 @@ int check_paths(t_data *game_data)
 	i = 0;
 	while (i < 4)
 	{
-		fd = open(game_data->tex_paths[i], O_RDONLY);
+		fd = open(var->tex_paths[i], O_RDONLY);
 		if (fd == -1)
 			return (-1);
 		close(fd);
 		i++;
 	}
-	// fd = open(game_data->ea_tex, O_RDONLY);
+	// fd = open(var->ea_tex, O_RDONLY);
 	// if (fd == -1)
 	// 	return (-1);
 	// close(fd);
-	// fd = open(game_data->so_tex, O_RDONLY);
+	// fd = open(var->so_tex, O_RDONLY);
 	// if (fd == -1)
 	// 	return (-1);
 	// close(fd);
-	// fd = open(game_data->we_tex, O_RDONLY);
+	// fd = open(var->we_tex, O_RDONLY);
 	// if (fd == -1)
 	// 	return (-1);
 	// close(fd);
-	// fd = open(game_data->no_tex, O_RDONLY);
+	// fd = open(var->no_tex, O_RDONLY);
 	// if (fd == -1)
 	// 	return (-1);
 	// close(fd);
@@ -147,16 +147,16 @@ void print_data(const t_data *data)
 	// printf("Configs done: %d\n", data->configs_done);
 }
 
-void free_and_exit(t_data *game_data, char *message, int ret)
+void free_and_exit(t_data *var, char *message, int ret)
 {
-	if (game_data)
-		free_data(game_data);
+	if (var)
+		free_data(var);
 	if (message)
 		printf("Error\n%s\n", message);
-	if (game_data->mlx)
-		free_mlx_stuff(game_data);
-	close(game_data->fd);
-	exit (ret);
+	if (var->mlx)
+		free_mlx_stuff(var);
+	close(var->fd);
+	exit(ret);
 }
 /*
 int check_after_map(int fd)
@@ -181,24 +181,24 @@ int check_after_map(int fd)
 
 int main(int argc, char **argv)
 {
-	t_data game_data;
+	t_data var;
 
 	if (validate_args(argv[1], argc))
 		return (1);
-	ft_bzero(&game_data, sizeof(t_data));
-	game_data.fd = open(argv[1], O_RDONLY);
-	if (game_data.fd == -1)
+	ft_bzero(&var, sizeof(t_data));
+	var.fd = open(argv[1], O_RDONLY);
+	if (var.fd == -1)
 		return (1);
-	if (validate_config(game_data.fd, &game_data))
-		free_and_exit(&game_data, "bad config", 1);
-	if (check_paths(&game_data) == -1)
+	if (validate_config(var.fd, &var))
+		free_and_exit(&var, "bad config", 1);
+	if (check_paths(&var) == -1)
 	{
-		free_gnl(game_data.fd, NULL, NULL);
-		free_and_exit(&game_data, "bad path", 1);
+		free_gnl(var.fd, NULL, NULL);
+		free_and_exit(&var, "bad path", 1);
 	}
-	if (validate_map(game_data.fd, &game_data))
-		free_and_exit(&game_data, "bad map", 1);
-	print_data(&game_data);
-	mlx_stuff(&game_data);
-	free_and_exit(&game_data, NULL, 0);
+	if (validate_map(var.fd, &var))
+		free_and_exit(&var, "bad map", 1);
+	print_data(&var);
+	mlx_stuff(&var);
+	free_and_exit(&var, NULL, 0);
 }
