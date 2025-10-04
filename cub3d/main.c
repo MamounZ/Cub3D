@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 12:26:33 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/04 14:50:23 by thdaib           ###   ########.fr       */
+/*   Updated: 2025/10/04 16:06:43 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,52 +87,6 @@ int	check_paths(t_data *var)
 	return (fd);
 }
 
-// void	print_list(t_list *head)
-// {
-// 	t_list	*temp;
-
-// 	temp = head;
-// 	while (temp)
-// 	{
-// 		ft_printf("%s->\n", temp->content);
-// 		temp = temp->next;
-// 	}
-// }
-// #include <stdio.h>
-
-// void	print_data(const t_data *data)
-// {
-// 	int	i;
-
-// 	printf("Ceiling RGB: %d, %d, %d\n",
-// 			data->ceiling_rgb[0],
-// 			data->ceiling_rgb[1],
-// 			data->ceiling_rgb[2]);
-// 	printf("Floor RGB: %d, %d, %d\n",
-// 			data->floor_rgb[0],
-// 			data->floor_rgb[1],
-// 			data->floor_rgb[2]);
-// 	if (data->map)
-// 	{
-// 		i = 0;
-// 		while (data->map[i])
-// 		{
-// 			printf("%s\n", data->map[i]);
-// 			i++;
-// 		}
-// 	}
-// 	printf("----------------------------------map copy-----------------------------------------\n");
-// 	if (data->map_copy)
-// 	{
-// 		i = 0;
-// 		while (data->map_copy[i])
-// 		{
-// 			printf("%s\n", data->map_copy[i]);
-// 			i++;
-// 		}
-// 	}
-// }
-
 int	main(int argc, char **argv)
 {
 	t_data	var;
@@ -142,7 +96,10 @@ int	main(int argc, char **argv)
 	ft_bzero(&var, sizeof(t_data));
 	var.fd = open(argv[1], O_RDONLY);
 	if (var.fd == -1)
+	{
+		printf("Error\ncannot open file\n");
 		return (1);
+	}
 	if (validate_config(var.fd, &var))
 		free_and_exit(&var, "bad config", 1);
 	if (check_paths(&var) == -1)
@@ -152,7 +109,6 @@ int	main(int argc, char **argv)
 	}
 	if (validate_map(var.fd, &var))
 		free_and_exit(&var, "bad map", 1);
-	// print_data(&var);
 	mlx_stuff(&var);
 	free_and_exit(&var, NULL, 0);
 }

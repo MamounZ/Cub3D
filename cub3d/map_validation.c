@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: thdaib <thdaib@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mazaid <mazaid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 13:48:42 by thdaib            #+#    #+#             */
-/*   Updated: 2025/10/04 13:49:50 by thdaib           ###   ########.fr       */
+/*   Updated: 2025/10/04 16:02:29 by mazaid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*skip_initial_newlines(int fd)
 	char	*line;
 
 	line = get_next_line(fd);
+	if (!line)
+		free_gnl(fd, line, NULL);
 	while (line && is_empty_line(line))
 	{
 		free(line);
